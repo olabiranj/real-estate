@@ -24,7 +24,6 @@ import PerfectScrollbar from "perfect-scrollbar";
 import AdminNavbar from "components/Navbars/AdminNavbar.js";
 import Footer from "components/Footer/Footer.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
-import FixedPlugin from "components/FixedPlugin/FixedPlugin.js";
 
 import routes from "routes.js";
 
@@ -34,9 +33,9 @@ import { useAuth } from "services/hooks";
 
 var ps;
 
-function Admin(props) {
+function Admin() {
   // eslint-disable-next-line
-  let auth = useAuth();
+  let { logout } = useAuth();
   const location = useLocation();
   const mainPanelRef = React.useRef(null);
   const [sidebarOpened, setsidebarOpened] = React.useState(
@@ -106,7 +105,7 @@ function Admin(props) {
   };
   return (
     <BackgroundColorContext.Consumer>
-      {({ color, changeColor }) => (
+      {({ color }) => (
         <React.Fragment>
           <div className="wrapper">
             <Sidebar
@@ -120,6 +119,7 @@ function Admin(props) {
             />
             <div className="main-panel" ref={mainPanelRef} data={color}>
               <AdminNavbar
+                logout={logout}
                 brandText={getBrandText(location.pathname)}
                 toggleSidebar={toggleSidebar}
                 sidebarOpened={sidebarOpened}
@@ -134,7 +134,6 @@ function Admin(props) {
               }
             </div>
           </div>
-          <FixedPlugin bgColor={color} handleBgClick={changeColor} />
         </React.Fragment>
       )}
     </BackgroundColorContext.Consumer>

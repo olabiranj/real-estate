@@ -5,7 +5,9 @@ import { LOGIN_SUCCESS, LOGOUT_SUCCESS } from "../redux/actions/types";
 import { url } from "./helpers";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router";
-import { publicRoutes, backendRoutes } from "routes";
+import { backendRoutes } from "routes";
+import { publicRoutes } from "routes";
+import { message } from "antd";
 
 export const useAuth = () => {
   const [value, setValue] = useState();
@@ -21,7 +23,7 @@ export const useAuth = () => {
     phone_country: "NG",
     password: "",
     password2: "",
-    callback_url: "http://localhost:3000",
+    callback_url: "https://demo-re.netlify.app/",
   });
   useEffect(() => {
     if (
@@ -29,6 +31,7 @@ export const useAuth = () => {
       window.location.pathname.includes("/admin")
     ) {
       dispatch({ type: LOGOUT_SUCCESS });
+      setTimeout(() => localStorage.removeItem("token"), 1000);
       window.location.pathname = publicRoutes.LOGIN;
     }
     // eslint-disable-next-line
@@ -39,10 +42,10 @@ export const useAuth = () => {
     axios
       .post(url(backendRoutes.login_user), form)
       .then((res) => {
-        localStorage.setItem("token", res.data.data.token);
+        localStorage.setItem("token", res.data.access_token);
         dispatch({
           type: LOGIN_SUCCESS,
-          payload: { ...res.data.data },
+          payload: { ...res.data },
         });
         setForm({ email: "", password: "" });
         history.push("/admin");
@@ -112,6 +115,12 @@ export const useAuth = () => {
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
+
+  function logout() {
+    dispatch({ type: LOGOUT_SUCCESS });
+    setTimeout(() => localStorage.removeItem("token"), 1000);
+    window.location.pathname = publicRoutes.LOGIN;
+  }
   return {
     login,
     authloading,
@@ -122,5 +131,112 @@ export const useAuth = () => {
     value,
     setValue,
     handleForgotpassword,
+    logout,
+  };
+};
+
+export const usePropertyCategories = () => {
+  const [propLoading, setPropLoading] = useState(false);
+  const [propertyCategories, setPropCategories] = useState([]);
+  function getPropertyCategory(cb) {
+    setPropLoading(true);
+    axios
+      .get(url(backendRoutes.admin_categories))
+      .then((res) => {
+        if (res.data.status === "success") {
+          setPropCategories(res.data.data);
+        } else {
+          message.error(res.data.message);
+        }
+        cb && cb();
+        setPropLoading(false);
+      })
+      .catch((err) => {
+        message.error("Unable to create category");
+        setPropLoading(false);
+        cb && cb();
+      });
+  }
+
+  function addPropertyCategory(params, cb) {
+    setPropLoading(true);
+    axios
+      .post(url(backendRoutes.admin_categories), params)
+      .then((res) => {
+        if (res.data.status === "success") {
+          message.success(res.data.message);
+        } else {
+          message.error(res.data.message);
+        }
+        cb && cb();
+        setPropLoading(false);
+      })
+      .catch((err) => {
+        message.error("Unable to create category");
+        setPropLoading(false);
+        cb && cb();
+      });
+  }
+
+  useEffect(() => {
+    getPropertyCategory();
+  }, []);
+  return {
+    addPropertyCategory,
+    propLoading,
+    propertyCategories,
+  };
+};
+export const useProperties = () => {
+  const [propLoading, setPropLoading] = useState(false);
+  const [propertyCategories, setPropCategories] = useState([]);
+  function getPropertyCategory(cb) {
+    // setPropLoading(true);
+    // axios
+    //   .get(url(backendRoutes.admin_categories))
+    //   .then((res) => {
+    //     if (res.data.status === "success") {
+    //       setPropCategories(res.data.data);
+    //     } else {
+    //       message.error(res.data.message);
+    //     }
+    //     cb && cb();
+    //     setPropLoading(false);
+    //   })
+    //   .catch((err) => {
+    //     message.error("Unable to create category");
+    //     setPropLoading(false);
+    //     cb && cb();
+    //   });
+    setPropCategories(false);
+  }
+
+  function addProperty(params, cb) {
+    setPropLoading(true);
+    axios
+      .post(url("/test"), params)
+      .then((res) => {
+        if (res.data.status === "success") {
+          message.success(res.data.message);
+        } else {
+          message.error(res.data.message);
+        }
+        cb && cb();
+        setPropLoading(false);
+      })
+      .catch((err) => {
+        message.error("Unable to create category");
+        setPropLoading(false);
+        cb && cb();
+      });
+  }
+
+  useEffect(() => {
+    getPropertyCategory();
+  }, []);
+  return {
+    addProperty,
+    propLoading,
+    propertyCategories,
   };
 };

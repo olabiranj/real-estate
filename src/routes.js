@@ -16,8 +16,8 @@
 
 */
 import Dashboard from "views/admin/Dashboard.js";
-import Icons from "views/admin/Icons.js";
-import Map from "views/admin/Map.js";
+import PropertyCategory from "views/admin/PropertyCategory.js";
+import Property from "views/admin/Property";
 import Notifications from "views/admin/Notifications.js";
 import TableList from "views/admin/TableList.js";
 import Typography from "views/admin/Typography.js";
@@ -27,31 +27,27 @@ var routes = [
   {
     path: "/dashboard",
     name: "Dashboard",
-    rtlName: "لوحة القيادة",
     icon: "tim-icons icon-chart-pie-36",
     component: Dashboard,
     layout: "/admin",
   },
   {
-    path: "/icons",
-    name: "Icons",
-    rtlName: "الرموز",
+    path: "/property-category",
+    name: "Property Category",
     icon: "tim-icons icon-atom",
-    component: Icons,
+    component: PropertyCategory,
     layout: "/admin",
   },
   {
-    path: "/map",
-    name: "Map",
-    rtlName: "خرائط",
+    path: "/property",
+    name: "Property",
     icon: "tim-icons icon-pin",
-    component: Map,
+    component: Property,
     layout: "/admin",
   },
   {
     path: "/notifications",
     name: "Notifications",
-    rtlName: "إخطارات",
     icon: "tim-icons icon-bell-55",
     component: Notifications,
     layout: "/admin",
@@ -59,7 +55,6 @@ var routes = [
   {
     path: "/user-profile",
     name: "User Profile",
-    rtlName: "ملف تعريفي للمستخدم",
     icon: "tim-icons icon-single-02",
     component: UserProfile,
     layout: "/admin",
@@ -67,7 +62,6 @@ var routes = [
   {
     path: "/tables",
     name: "Table List",
-    rtlName: "قائمة الجدول",
     icon: "tim-icons icon-puzzle-10",
     component: TableList,
     layout: "/admin",
@@ -75,7 +69,6 @@ var routes = [
   {
     path: "/typography",
     name: "Typography",
-    rtlName: "طباعة",
     icon: "tim-icons icon-align-center",
     component: Typography,
     layout: "/admin",
@@ -98,5 +91,7 @@ export const backendRoutes = {
   forgot_password: "/forgot",
   reset_password: "/reset",
   get_user: "/user",
+  // admin routes
+  admin_categories: "/admin/categories",
 };
 export default routes;

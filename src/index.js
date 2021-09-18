@@ -40,6 +40,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Register from "views/Register";
 import ForgotPassword from "views/ForgotPassword";
 import ResetPassword from "views/ResetPassword";
+import "antd/dist/antd.css";
 
 axios.defaults.headers.common["client-id"] = "default";
 axios.defaults.headers.common.Authorization = `Bearer ${localStorage.getItem(
