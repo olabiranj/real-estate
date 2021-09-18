@@ -45,7 +45,7 @@ export const useAuth = () => {
           payload: { ...res.data.data },
         });
         setForm({ email: "", password: "" });
-        history.push("/user");
+        history.push("/admin");
       })
       .catch((err) => {
         err.response?.data?.error
