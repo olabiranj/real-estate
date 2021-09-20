@@ -26,11 +26,15 @@ import {
   Select,
   Popconfirm,
   InputNumber,
+  Upload,
 } from "antd";
+import Icon from "@ant-design/icons";
 import { useProperties } from "services/hooks";
 import { nigerian_states } from "services/helpers";
 import { usePropertyCategories } from "services/hooks";
 import { addKeysToObj } from "services/helpers";
+import { backendRoutes } from "routes";
+import { url } from "services/helpers";
 const { TabPane } = Tabs;
 
 function Property() {
@@ -93,6 +97,16 @@ function Property() {
           <Button
             onClick={() => {
               setEditData(record);
+              setTab("3");
+            }}
+            className="mr-2"
+            type="primary"
+          >
+            Add Image
+          </Button>
+          <Button
+            onClick={() => {
+              setEditData(record);
               setTab("1");
             }}
             className="mr-2"
@@ -112,6 +126,14 @@ function Property() {
       ),
     },
   ];
+  const fileList = [];
+  const props = {
+    action: url(
+      `${backendRoutes.admin_properties}/${editData && editData.id}/image`
+    ),
+    listType: "picture",
+    defaultFileList: [...fileList],
+  };
 
   return (
     <>
@@ -494,6 +516,51 @@ function Property() {
                       loading={propLoading}
                       columns={columns}
                     />
+                  </TabPane>
+                  <TabPane
+                    tab={<span onClick={() => setTab("3")}>Upload Image</span>}
+                    key="3"
+                  >
+                    <div className="row">
+                      <div className="col-md-6">
+                        <Form
+                          ref={formRef}
+                          name="basic"
+                          labelCol={{
+                            span: 8,
+                          }}
+                          wrapperCol={{
+                            span: 16,
+                          }}
+                          onFinish={onFinish}
+                          autoComplete="off"
+                        >
+                          {editData && editData.id && (
+                            <Upload {...props}>
+                              <Button>
+                                <Icon type="upload" /> upload
+                              </Button>
+                            </Upload>
+                          )}
+
+                          <Form.Item
+                            wrapperCol={{
+                              offset: 8,
+                              span: 16,
+                            }}
+                          >
+                            <Button
+                              type="primary"
+                              htmlType="submit"
+                              disabled={propLoading}
+                              loading={propLoading}
+                            >
+                              Upload
+                            </Button>
+                          </Form.Item>
+                        </Form>
+                      </div>
+                    </div>
                   </TabPane>
                 </Tabs>
               </CardBody>
