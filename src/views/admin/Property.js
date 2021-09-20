@@ -35,6 +35,7 @@ import { usePropertyCategories } from "services/hooks";
 import { addKeysToObj } from "services/helpers";
 import { backendRoutes } from "routes";
 import { url } from "services/helpers";
+// import axios from "axios";
 const { TabPane } = Tabs;
 
 function Property() {
@@ -57,6 +58,22 @@ function Property() {
         onReset
       );
   };
+  // const [file, setFile] = useState(null);
+  // const imageUpload = (values) => {
+  //   const formData = new FormData();
+  //   formData.append("image", file);
+  //   formData.append("name", "Josh");
+  //   axios
+  //     .post(
+  //       url(
+  //         `${backendRoutes.admin_properties}/${editData && editData.id}/image`,
+  //         formData
+  //       )
+  //     )
+  //     .then((res) => console.log(res.data))
+  //     .catch((err) => console.log(err));
+  //   console.log(formData);
+  // };
 
   const columns = [
     {
@@ -537,7 +554,7 @@ function Property() {
                           wrapperCol={{
                             span: 16,
                           }}
-                          onFinish={onFinish}
+                          // onFinish={imageUpload}
                           autoComplete="off"
                         >
                           {editData && editData.id && (
@@ -546,6 +563,12 @@ function Property() {
                                 <Icon type="upload" /> upload
                               </Button>
                             </Upload>
+                            // <input
+                            //   type="file"
+                            //   name="image"
+                            //   id=""
+                            //   onChange={(e) => setFile(e.target.files[0])}
+                            // />
                           )}
 
                           <Form.Item
@@ -554,14 +577,14 @@ function Property() {
                               span: 16,
                             }}
                           >
-                            <Button
+                            {/* <Button
                               type="primary"
                               htmlType="submit"
                               disabled={propLoading}
                               loading={propLoading}
                             >
                               Upload
-                            </Button>
+                            </Button> */}
                           </Form.Item>
                         </Form>
                       </div>

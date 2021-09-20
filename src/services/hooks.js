@@ -178,6 +178,47 @@ export const usePropertyCategories = () => {
         cb && cb();
       });
   }
+  function deletePropertyCategory(params, cb) {
+    setPropLoading(true);
+    axios
+      .delete(url(`${backendRoutes.admin_categories}/${params}/delete`))
+      .then((res) => {
+        if (res.data.status === "success") {
+          message.success(res.data.message);
+          getPropertyCategory();
+        } else {
+          message.error(res.data.message);
+        }
+        cb && cb();
+        setPropLoading(false);
+      })
+      .catch((err) => {
+        message.error(err.response.data.message);
+        setPropLoading(false);
+        cb && cb();
+      });
+  }
+  function editPropertyCategory(reqBody, id, cb) {
+    setPropLoading(true);
+    axios
+      .put(url(`${backendRoutes.admin_categories}/${id}/update`), reqBody)
+      .then((res) => {
+        if (res.data.status === "success") {
+          message.success(res.data.message);
+          setTimeout(() => window.location.reload(), 2000);
+          getPropertyCategory();
+        } else {
+          message.error(res.data.message);
+        }
+        cb && cb();
+        setPropLoading(false);
+      })
+      .catch((err) => {
+        message.error(err.response.data.message);
+        setPropLoading(false);
+        cb && cb();
+      });
+  }
 
   useEffect(() => {
     getPropertyCategory();
@@ -186,6 +227,8 @@ export const usePropertyCategories = () => {
     addPropertyCategory,
     propLoading,
     propertyCategories,
+    deletePropertyCategory,
+    editPropertyCategory,
   };
 };
 export const useProperties = () => {
