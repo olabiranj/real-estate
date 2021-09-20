@@ -174,9 +174,6 @@ function Property() {
     defaultFileList: [...fileList],
     name: "image",
   };
-  const showDrawer = () => {
-    setVisible(true);
-  };
   const onClose = () => {
     setVisible(false);
   };
