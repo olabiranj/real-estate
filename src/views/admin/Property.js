@@ -27,6 +27,7 @@ import {
   Popconfirm,
   InputNumber,
   Upload,
+  Drawer,
 } from "antd";
 import Icon from "@ant-design/icons";
 import { useProperties } from "services/hooks";
@@ -43,6 +44,7 @@ function Property() {
     useProperties();
   const { propLoading, propertyCategories } = usePropertyCategories();
   const [editData, setEditData] = useState(null);
+  const [visible, setVisible] = useState(false);
   const [tab, setTab] = useState("1");
   let formRef = useRef();
   const onReset = () => {
@@ -79,12 +81,21 @@ function Property() {
     {
       title: "Name",
       dataIndex: "property_name",
-      fixed: "left",
     },
     {
       title: "Category",
       dataIndex: "category",
-      render: (value, row) => <p>{value.category_description}</p>,
+      render: (value, row) => <p>{value.category_name}</p>,
+    },
+    {
+      title: "Image",
+      render: (value, record) => (
+        <img
+          width="200"
+          src={`${process.env.REACT_APP_BASE_URL}/${record.property_images[0].image_url}`}
+          alt={record.property_images[0].image_url}
+        />
+      ),
     },
     {
       title: "City",
@@ -102,15 +113,22 @@ function Property() {
       title: "Status",
       dataIndex: "status",
     },
+
     {
-      title: "Title Document",
-      dataIndex: "title_document",
-    },
-    {
-      title: "operation",
+      title: "operations",
       dataIndex: "operation",
       render: (value, record) => (
         <div className="d-flex">
+          <Button
+            onClick={() => {
+              setEditData(record);
+              setVisible(true);
+            }}
+            className="mr-2"
+            type="primary"
+          >
+            View Details
+          </Button>
           <Button
             onClick={() => {
               setEditData(record);
@@ -156,10 +174,72 @@ function Property() {
     defaultFileList: [...fileList],
     name: "image",
   };
+  const showDrawer = () => {
+    setVisible(true);
+  };
+  const onClose = () => {
+    setVisible(false);
+  };
 
   return (
     <>
       <div className="content">
+        {editData && editData.id && (
+          <Drawer
+            placement="right"
+            onClose={onClose}
+            width={"400px"}
+            visible={visible}
+          >
+            <div className="mt-4 pt-4">
+              <h4 className="mt-4">{editData.property_name}</h4>
+              <p>
+                <span className="font-weight-bold">City: </span> {editData.city}
+              </p>
+              <p>
+                <span className="font-weight-bold">Category: </span>{" "}
+                {editData.category.category_name}
+              </p>
+              <p>
+                <span className="font-weight-bold">State: </span>{" "}
+                {editData.state}
+              </p>
+              <p>
+                <span className="font-weight-bold">Units: </span>{" "}
+                {editData.units}
+              </p>
+              <p>
+                <span className="font-weight-bold">Status: </span>{" "}
+                {editData.status}
+              </p>
+              <p>
+                <span className="font-weight-bold">Price: </span>{" "}
+                {editData.price}
+              </p>
+              <p>
+                <span className="font-weight-bold">City: </span>{" "}
+                {editData.price}
+              </p>
+              <p>
+                <span className="font-weight-bold">Title Document: </span>{" "}
+                {editData.title_document}
+              </p>
+              <div className="">
+                {editData.property_images.map((img) => (
+                  <img
+                    onClick={() =>
+                      (window.location.href = `${process.env.REACT_APP_BASE_URL}/${img.image_url}`)
+                    }
+                    width="200"
+                    className="m-2"
+                    src={`${process.env.REACT_APP_BASE_URL}/${img.image_url}`}
+                    alt={img.image_url}
+                  />
+                ))}
+              </div>
+            </div>
+          </Drawer>
+        )}
         <Row>
           <Col md="12">
             <Card>
