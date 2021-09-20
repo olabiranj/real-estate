@@ -127,12 +127,17 @@ function Property() {
     },
   ];
   const fileList = [];
+
   const props = {
     action: url(
       `${backendRoutes.admin_properties}/${editData && editData.id}/image`
     ),
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
     listType: "picture",
     defaultFileList: [...fileList],
+    name: "image",
   };
 
   return (
