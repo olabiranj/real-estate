@@ -41,3 +41,10 @@ export const nigerian_states = [
   "Yobe",
   "Zamfara",
 ];
+
+// ant designs tables need a key for each table row
+export function addKeysToObj(params) {
+  let arr = [];
+  params && params.map((data, index) => arr.push({ key: index, ...data }));
+  return arr;
+}

@@ -93,5 +93,6 @@ export const backendRoutes = {
   get_user: "/user",
   // admin routes
   admin_categories: "/admin/categories",
+  admin_properties: "/admin/properties",
 };
 export default routes;

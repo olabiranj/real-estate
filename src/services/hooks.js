@@ -43,6 +43,7 @@ export const useAuth = () => {
       .post(url(backendRoutes.login_user), form)
       .then((res) => {
         localStorage.setItem("token", res.data.access_token);
+        axios.defaults.headers.common.Authorization = `Bearer ${res.data.access_token}`;
         dispatch({
           type: LOGIN_SUCCESS,
           payload: { ...res.data },
@@ -51,8 +52,8 @@ export const useAuth = () => {
         history.push("/admin");
       })
       .catch((err) => {
-        err.response?.data?.error
-          ? toast(err.response.data.error, { type: "error" })
+        err.response?.data?.message
+          ? toast(err.response.data.message, { type: "error" })
           : toast("Unable to Login at the moment", { type: "error" });
         setAuthLoading(false);
       });
@@ -152,7 +153,7 @@ export const usePropertyCategories = () => {
         setPropLoading(false);
       })
       .catch((err) => {
-        message.error("Unable to create category");
+        message.error("Unable to get category");
         setPropLoading(false);
         cb && cb();
       });
@@ -189,35 +190,14 @@ export const usePropertyCategories = () => {
 };
 export const useProperties = () => {
   const [propLoading, setPropLoading] = useState(false);
-  const [propertyCategories, setPropCategories] = useState([]);
-  function getPropertyCategory(cb) {
-    // setPropLoading(true);
-    // axios
-    //   .get(url(backendRoutes.admin_categories))
-    //   .then((res) => {
-    //     if (res.data.status === "success") {
-    //       setPropCategories(res.data.data);
-    //     } else {
-    //       message.error(res.data.message);
-    //     }
-    //     cb && cb();
-    //     setPropLoading(false);
-    //   })
-    //   .catch((err) => {
-    //     message.error("Unable to create category");
-    //     setPropLoading(false);
-    //     cb && cb();
-    //   });
-    setPropCategories(false);
-  }
-
-  function addProperty(params, cb) {
+  const [properties, setProperties] = useState([]);
+  function getProperties(cb) {
     setPropLoading(true);
     axios
-      .post(url("/test"), params)
+      .get(url(backendRoutes.admin_properties))
       .then((res) => {
         if (res.data.status === "success") {
-          message.success(res.data.message);
+          setProperties(res.data.data);
         } else {
           message.error(res.data.message);
         }
@@ -225,18 +205,84 @@ export const useProperties = () => {
         setPropLoading(false);
       })
       .catch((err) => {
-        message.error("Unable to create category");
+        message.error(err.response.data.message);
+
+        setPropLoading(false);
+        cb && cb();
+      });
+    setProperties(false);
+  }
+
+  function addProperty(params, cb) {
+    setPropLoading(true);
+    axios
+      .post(url(backendRoutes.admin_properties), params)
+      .then((res) => {
+        if (res.data.status === "success") {
+          message.success(res.data.message);
+          getProperties();
+        } else {
+          message.error(res.data.message);
+        }
+        cb && cb();
+        setPropLoading(false);
+      })
+      .catch((err) => {
+        message.error(err.response.data.message);
+        setPropLoading(false);
+        cb && cb();
+      });
+  }
+  function editProperty(reqBody, id, cb) {
+    setPropLoading(true);
+    axios
+      .put(url(`${backendRoutes.admin_properties}/${id}/update`), reqBody)
+      .then((res) => {
+        if (res.data.status === "success") {
+          message.success(res.data.message);
+          setTimeout(() => window.location.reload(), 2000);
+          getProperties();
+        } else {
+          message.error(res.data.message);
+        }
+        cb && cb();
+        setPropLoading(false);
+      })
+      .catch((err) => {
+        message.error(err.response.data.message);
+        setPropLoading(false);
+        cb && cb();
+      });
+  }
+  function deleteProperty(params, cb) {
+    setPropLoading(true);
+    axios
+      .delete(url(`${backendRoutes.admin_properties}/${params}/delete`))
+      .then((res) => {
+        if (res.data.status === "success") {
+          message.success(res.data.message);
+          getProperties();
+        } else {
+          message.error(res.data.message);
+        }
+        cb && cb();
+        setPropLoading(false);
+      })
+      .catch((err) => {
+        message.error(err.response.data.message);
         setPropLoading(false);
         cb && cb();
       });
   }
 
   useEffect(() => {
-    getPropertyCategory();
+    getProperties();
   }, []);
   return {
+    deleteProperty,
     addProperty,
     propLoading,
-    propertyCategories,
+    properties,
+    editProperty,
   };
 };

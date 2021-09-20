@@ -19,6 +19,7 @@ import React, { useRef } from "react";
 import { Card, CardHeader, CardBody, Row, Col } from "reactstrap";
 import { Tabs, Form, Input, Button, Table } from "antd";
 import { usePropertyCategories } from "services/hooks";
+import { addKeysToObj } from "services/helpers";
 const { TabPane } = Tabs;
 
 function PropertyCategory() {
@@ -35,13 +36,11 @@ function PropertyCategory() {
   const columns = [
     {
       title: "Name",
-      dataIndex: "category_description",
-      key: "name",
+      dataIndex: "category_name",
     },
     {
-      title: "Age",
-      dataIndex: "category_name",
-      key: "age",
+      title: "Description",
+      dataIndex: "category_description",
     },
   ];
 
@@ -119,7 +118,7 @@ function PropertyCategory() {
                   </TabPane>
                   <TabPane tab={<span>View Categories</span>} key="2">
                     <Table
-                      dataSource={propertyCategories}
+                      dataSource={addKeysToObj(propertyCategories)}
                       loading={propLoading}
                       columns={columns}
                     />
