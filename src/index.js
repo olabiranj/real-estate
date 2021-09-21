@@ -26,6 +26,7 @@ import { store, persistor } from "./redux/store";
 import { PersistGate } from "redux-persist/es/integration/react";
 
 import AdminLayout from "layouts/Admin/Admin.js";
+import UserLayout from "layouts/User/User";
 
 import "assets/scss/black-dashboard-react.scss";
 import "assets/demo/demo.css";
@@ -56,6 +57,10 @@ ReactDOM.render(
               <Route
                 path="/admin"
                 render={(props) => <AdminLayout {...props} />}
+              />
+              <Route
+                path="/user"
+                render={(props) => <UserLayout {...props} />}
               />
               <Route
                 path={publicRoutes.LOGIN}

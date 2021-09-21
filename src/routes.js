@@ -18,10 +18,11 @@
 import Dashboard from "views/admin/Dashboard.js";
 import PropertyCategory from "views/admin/PropertyCategory.js";
 import Property from "views/admin/Property";
-import Notifications from "views/admin/Notifications.js";
-import TableList from "views/admin/TableList.js";
-import Typography from "views/admin/Typography.js";
-import UserProfile from "views/admin/UserProfile.js";
+import Consultants from "views/admin/Consultants";
+// import TableList from "views/admin/TableList.js";
+// import Typography from "views/admin/Typography.js";
+// import UserProfile from "views/admin/UserProfile.js";
+import ConsultantDashboard from "views/user/ConsultantDashboard.js";
 
 var routes = [
   {
@@ -46,32 +47,20 @@ var routes = [
     layout: "/admin",
   },
   {
-    path: "/notifications",
-    name: "Notifications",
+    path: "/consultants",
+    name: "Consultants",
     icon: "tim-icons icon-bell-55",
-    component: Notifications,
+    component: Consultants,
     layout: "/admin",
   },
+];
+export const userRoutes = [
   {
-    path: "/user-profile",
-    name: "User Profile",
-    icon: "tim-icons icon-single-02",
-    component: UserProfile,
-    layout: "/admin",
-  },
-  {
-    path: "/tables",
-    name: "Table List",
-    icon: "tim-icons icon-puzzle-10",
-    component: TableList,
-    layout: "/admin",
-  },
-  {
-    path: "/typography",
-    name: "Typography",
-    icon: "tim-icons icon-align-center",
-    component: Typography,
-    layout: "/admin",
+    path: "/dashboard",
+    name: "Dashboard",
+    icon: "tim-icons icon-chart-pie-36",
+    component: ConsultantDashboard,
+    layout: "/user",
   },
 ];
 
@@ -94,5 +83,6 @@ export const backendRoutes = {
   // admin routes
   admin_categories: "/admin/categories",
   admin_properties: "/admin/properties",
+  admin_consultants: "/admin/consultants",
 };
 export default routes;

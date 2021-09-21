@@ -63,12 +63,8 @@ export const useAuth = () => {
     e.preventDefault();
     if (form.password === form.password2) {
       axios
-        .post(
-          `${process.env.REACT_APP_BASE_URL}${backendRoutes.create_account}`,
-          { ...form, phone: value }
-        )
+        .post(url(backendRoutes.create_account), { ...form, phone: value })
         .then((res) => {
-          console.log(res.data);
           setForm({
             name: "",
             lname: "",
@@ -76,12 +72,14 @@ export const useAuth = () => {
             phone: "",
             phone_country: "NG",
             password: "",
-            callback_url: "http://localhost:3000",
+            password2: "",
+            callback_url: "https://demo-re.netlify.app/",
           });
+          toast(res.data.message, { type: "success" });
         })
         .catch((err) => {
-          err.response?.data?.error
-            ? toast(err.response.data.error, { type: "error" })
+          err.response?.data?.message
+            ? toast(err.response.data.message, { type: "error" })
             : toast("Unable to Login at the moment", { type: "error" });
           setAuthLoading(false);
         });
@@ -98,18 +96,13 @@ export const useAuth = () => {
     axios
       .post(url(backendRoutes.forgot_password), form)
       .then((res) => {
-        localStorage.setItem("token", res.data.data.token);
-        dispatch({
-          type: LOGIN_SUCCESS,
-          payload: { ...res.data.data },
-        });
         setForm({ email: "", password: "" });
-        history.push("/user");
+        toast(res.data.message, { type: "success" });
       })
       .catch((err) => {
-        err.response?.data?.error
-          ? toast(err.response.data.error, { type: "error" })
-          : toast("Unable to Login at the moment", { type: "error" });
+        err.response?.data?.message
+          ? toast(err.response.data.emessage, { type: "error" })
+          : toast("Unable to register at the moment", { type: "error" });
         setAuthLoading(false);
       });
   }
@@ -214,7 +207,7 @@ export const usePropertyCategories = () => {
         setPropLoading(false);
       })
       .catch((err) => {
-        message.error(err.response.data.message);
+        message.error(err.response?.data?.message);
         setPropLoading(false);
         cb && cb();
       });
@@ -248,7 +241,8 @@ export const useProperties = () => {
         setPropLoading(false);
       })
       .catch((err) => {
-        message.error(err.response.data.message);
+        err.response?.data?.message &&
+          message.error(err.response?.data?.message);
 
         setPropLoading(false);
         cb && cb();
@@ -327,5 +321,39 @@ export const useProperties = () => {
     propLoading,
     properties,
     editProperty,
+  };
+};
+export const useConsultants = () => {
+  const [consLoading, setConsLoading] = useState(false);
+  const [consultants, setConsultants] = useState([]);
+  function getConsultants(cb) {
+    setConsLoading(true);
+    axios
+      .get(url(backendRoutes.admin_consultants))
+      .then((res) => {
+        if (res.data.status === "success") {
+          setConsultants(res.data.data);
+        } else {
+          message.error(res.data.message);
+        }
+        cb && cb();
+        setConsLoading(false);
+      })
+      .catch((err) => {
+        err.response?.data?.message &&
+          message.error(err.response?.data?.message);
+
+        setConsLoading(false);
+        cb && cb();
+      });
+  }
+
+  useEffect(() => {
+    getConsultants();
+  }, []);
+  return {
+    getConsultants,
+    consLoading,
+    consultants,
   };
 };

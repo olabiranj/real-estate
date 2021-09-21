@@ -25,7 +25,7 @@ import AdminNavbar from "components/Navbars/AdminNavbar.js";
 // import Footer from "components/Footer/Footer.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 
-import routes from "routes.js";
+import { userRoutes } from "routes.js";
 
 import logo from "assets/img/react-logo.png";
 import { BackgroundColorContext } from "contexts/BackgroundColorContext";
@@ -33,7 +33,7 @@ import { useAuth } from "services/hooks";
 
 var ps;
 
-function Admin() {
+function User() {
   // eslint-disable-next-line
   let { logout } = useAuth();
   const location = useLocation();
@@ -82,7 +82,7 @@ function Admin() {
   };
   const getRoutes = (routes) => {
     return routes.map((prop, key) => {
-      if (prop.layout === "/admin") {
+      if (prop.layout === "/user") {
         return (
           <Route
             path={prop.layout + prop.path}
@@ -96,9 +96,12 @@ function Admin() {
     });
   };
   const getBrandText = (path) => {
-    for (let i = 0; i < routes.length; i++) {
-      if (location.pathname.indexOf(routes[i].layout + routes[i].path) !== -1) {
-        return routes[i].name;
+    for (let i = 0; i < userRoutes.length; i++) {
+      if (
+        location.pathname.indexOf(userRoutes[i].layout + userRoutes[i].path) !==
+        -1
+      ) {
+        return userRoutes[i].name;
       }
     }
     return "Brand";
@@ -109,7 +112,7 @@ function Admin() {
         <React.Fragment>
           <div className="wrapper">
             <Sidebar
-              routes={routes}
+              routes={userRoutes}
               logo={{
                 outterLink: "#",
                 text: "Real Estate",
@@ -125,13 +128,10 @@ function Admin() {
                 sidebarOpened={sidebarOpened}
               />
               <Switch>
-                {getRoutes(routes)}
-                <Redirect from="*" to="/admin/dashboard" />
+                {getRoutes(userRoutes)}
+                <Redirect from="*" to="/user/dashboard" />
               </Switch>
-              {/* {
-                // we don't want the Footer to be rendered on map page
-                location.pathname === "/admin/maps" ? null : <Footer fluid />
-              } */}
+              {/* <Footer fluid /> */}
             </div>
           </div>
         </React.Fragment>
@@ -140,4 +140,4 @@ function Admin() {
   );
 }
 
-export default Admin;
+export default User;
