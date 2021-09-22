@@ -31,6 +31,7 @@ const ForgotPassword = () => {
             <input
               type="submit"
               className="fadeIn fourth"
+              disabled={authloading}
               value={authloading ? "Loading..." : "Send"}
             />
           </form>

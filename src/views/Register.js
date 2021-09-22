@@ -83,6 +83,7 @@ const Register = () => {
             <input
               type="submit"
               className="fadeIn fourth"
+              disabled={authloading}
               value={authloading ? "Loading..." : "Register"}
             />
           </form>

@@ -40,6 +40,7 @@ const ResetPassword = () => {
             <input
               type="submit"
               className="fadeIn fourth"
+              disabled={authloading}
               value={authloading ? "Loading..." : "Reset"}
             />
           </form>

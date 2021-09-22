@@ -44,6 +44,7 @@ const Login = () => {
             <input
               type="submit"
               className="fadeIn fourth"
+              disabled={authloading}
               value={authloading ? "Loading..." : "Log In"}
             />
           </form>

@@ -15,6 +15,7 @@ export const useAuth = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   let [authloading, setAuthLoading] = useState(false);
+  let frontendUrl = "https://demo-re.netlify.app";
   const [form, setForm] = useState({
     name: "",
     lname: "",
@@ -23,7 +24,7 @@ export const useAuth = () => {
     phone_country: "NG",
     password: "",
     password2: "",
-    callback_url: "https://demo-re.netlify.app/",
+    callback_url: "",
   });
   useEffect(() => {
     if (
@@ -49,9 +50,12 @@ export const useAuth = () => {
           payload: { ...res.data },
         });
         setForm({ email: "", password: "" });
-        history.push("/admin");
+        res.data.data.roles[0].name === "admin"
+          ? history.push("/admin")
+          : history.push("/user");
       })
       .catch((err) => {
+        console.log(err);
         err.response?.data?.message
           ? toast(err.response.data.message, { type: "error" })
           : toast("Unable to Login at the moment", { type: "error" });
@@ -94,7 +98,10 @@ export const useAuth = () => {
     e.preventDefault();
     setAuthLoading(true);
     axios
-      .post(url(backendRoutes.forgot_password), form)
+      .post(url(backendRoutes.forgot_password), {
+        callback_url: `${frontendUrl}${publicRoutes.RESET_PASSWORD}`,
+        email: form.email,
+      })
       .then((res) => {
         setForm({ email: "", password: "" });
         toast(res.data.message, { type: "success" });
