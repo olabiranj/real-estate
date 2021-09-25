@@ -156,7 +156,7 @@ function PropertyCategory() {
                                 },
                               ]}
                             >
-                              <Input />
+                              <Input.TextArea autoSize={{ minRows: 5 }} />
                             </Form.Item>
                           )}
                           {editData && editData.id && (
@@ -171,7 +171,8 @@ function PropertyCategory() {
                                 },
                               ]}
                             >
-                              <Input
+                              <Input.TextArea
+                                autoSize={{ minRows: 5 }}
                                 defaultValue={editData.category_description}
                               />
                             </Form.Item>

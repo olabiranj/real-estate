@@ -5,7 +5,7 @@ import { useAuth } from "../services/hooks";
 import { publicRoutes } from "routes";
 
 const ResetPassword = () => {
-  let { handleChange, handleForgotpassword, form, authloading } = useAuth();
+  let { handleChange, handleResetpassword, form, authloading } = useAuth();
   return (
     <ResetPassword.Wrapper className="p-2">
       <div className="wrapper fadeInDown">
@@ -18,11 +18,11 @@ const ResetPassword = () => {
 
           <h2 className="active"> Forgot Password </h2>
 
-          <form onSubmit={(e) => handleForgotpassword(e)}>
+          <form onSubmit={(e) => handleResetpassword(e)}>
             <input
               type="password"
               className="fadeIn second mt-2"
-              value={form.email}
+              value={form.password}
               onChange={(e) => handleChange(e)}
               name="password"
               placeholder="Enter new password"
@@ -31,7 +31,7 @@ const ResetPassword = () => {
             <input
               type="password"
               className="fadeIn second my-4"
-              value={form.email}
+              value={form.password2}
               onChange={(e) => handleChange(e)}
               name="password2"
               placeholder="Confirm password"

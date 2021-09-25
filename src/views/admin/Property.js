@@ -36,6 +36,7 @@ import { usePropertyCategories } from "services/hooks";
 import { addKeysToObj } from "services/helpers";
 import { backendRoutes } from "routes";
 import { url } from "services/helpers";
+import { useCommission } from "services/hooks";
 // import axios from "axios";
 const { TabPane } = Tabs;
 
@@ -43,6 +44,7 @@ function Property() {
   const { addProperty, properties, deleteProperty, editProperty } =
     useProperties();
   const { propLoading, propertyCategories } = usePropertyCategories();
+  const { commissions } = useCommission();
   const [editData, setEditData] = useState(null);
   const [visible, setVisible] = useState(false);
   const [tab, setTab] = useState("1");
@@ -60,22 +62,6 @@ function Property() {
         onReset
       );
   };
-  // const [file, setFile] = useState(null);
-  // const imageUpload = (values) => {
-  //   const formData = new FormData();
-  //   formData.append("image", file);
-  //   formData.append("name", "Josh");
-  //   axios
-  //     .post(
-  //       url(
-  //         `${backendRoutes.admin_properties}/${editData && editData.id}/image`,
-  //         formData
-  //       )
-  //     )
-  //     .then((res) => console.log(res.data))
-  //     .catch((err) => console.log(err));
-  //   console.log(formData);
-  // };
 
   const columns = [
     {
@@ -89,13 +75,14 @@ function Property() {
     },
     {
       title: "Image",
-      render: (value, record) => (
-        <img
-          width="200"
-          src={`${process.env.REACT_APP_BASE_URL}/${record.property_images[0].image_url}`}
-          alt={record.property_images[0].image_url}
-        />
-      ),
+      render: (value, record) =>
+        record.property_images.length > 0 && (
+          <img
+            width="200"
+            src={`${process.env.REACT_APP_BASE_URL}/${record.property_images[0].image_url}`}
+            alt={record.property_images[0].image_url}
+          />
+        ),
     },
     {
       title: "City",
@@ -402,20 +389,7 @@ function Property() {
                               <Input />
                             </Form.Item>
                           )}
-                          {editData === null && (
-                            <Form.Item
-                              label="City"
-                              name="city"
-                              rules={[
-                                {
-                                  required: true,
-                                  message: "Please enter a city",
-                                },
-                              ]}
-                            >
-                              <Input />
-                            </Form.Item>
-                          )}
+
                           {editData && editData.id && (
                             <Form.Item
                               label="City"
@@ -517,6 +491,56 @@ function Property() {
                           )}
                           {editData === null && (
                             <Form.Item
+                              name="property_commission"
+                              label="Commission"
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Please select a commission",
+                                },
+                              ]}
+                            >
+                              <Select
+                                placeholder="Select a property commission"
+                                allowClear
+                              >
+                                {commissions.map((commission, i) => (
+                                  <Select.Option key={i} value={commission.id}>
+                                    {commission.commission_name}
+                                  </Select.Option>
+                                ))}
+                              </Select>
+                            </Form.Item>
+                          )}
+                          {editData && editData && (
+                            <Form.Item
+                              name="property_commission"
+                              label="Commission"
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Please select a commission",
+                                },
+                              ]}
+                              initialValue={editData.category.id}
+                            >
+                              <Select
+                                placeholder="Select a property commission"
+                                allowClear
+                              >
+                                <Select.Option value={editData.id}>
+                                  {editData.commission_name}
+                                </Select.Option>
+                                {commissions.map((commission, i) => (
+                                  <Select.Option key={i} value={commission.id}>
+                                    {commission.commission_name}
+                                  </Select.Option>
+                                ))}
+                              </Select>
+                            </Form.Item>
+                          )}
+                          {editData === null && (
+                            <Form.Item
                               label="Price"
                               name="price"
                               rules={[
@@ -532,6 +556,10 @@ function Property() {
                                     /\B(?=(\d{3})+(?!\d))/g,
                                     ","
                                   )
+                                }
+                                parser={(value) =>
+                                  // eslint-disable-next-line
+                                  value.replace(/\N\s?|(,*)/g, "")
                                 }
                               />
                             </Form.Item>
@@ -555,6 +583,10 @@ function Property() {
                                     /\B(?=(\d{3})+(?!\d))/g,
                                     ","
                                   )
+                                }
+                                parser={(value) =>
+                                  // eslint-disable-next-line
+                                  value.replace(/\N\s?|(,*)/g, "")
                                 }
                               />
                             </Form.Item>

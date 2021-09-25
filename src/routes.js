@@ -19,6 +19,7 @@ import Dashboard from "views/admin/Dashboard.js";
 import PropertyCategory from "views/admin/PropertyCategory.js";
 import Property from "views/admin/Property";
 import Consultants from "views/admin/Consultants";
+import Commission from "views/admin/Commission";
 // import TableList from "views/admin/TableList.js";
 // import Typography from "views/admin/Typography.js";
 // import UserProfile from "views/admin/UserProfile.js";
@@ -37,6 +38,13 @@ var routes = [
     name: "Property Category",
     icon: "tim-icons icon-atom",
     component: PropertyCategory,
+    layout: "/admin",
+  },
+  {
+    path: "/commission",
+    name: "Commission",
+    icon: "tim-icons icon-bell-55",
+    component: Commission,
     layout: "/admin",
   },
   {
@@ -84,5 +92,6 @@ export const backendRoutes = {
   admin_categories: "/admin/categories",
   admin_properties: "/admin/properties",
   admin_consultants: "/admin/consultants",
+  admin_commission: "/admin/commissions",
 };
 export default routes;

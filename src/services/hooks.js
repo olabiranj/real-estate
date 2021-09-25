@@ -15,7 +15,7 @@ export const useAuth = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   let [authloading, setAuthLoading] = useState(false);
-  let frontendUrl = "https://demo-re.netlify.app";
+  let frontendUrl = "https://demo-re.netlify.app/verify";
   const [form, setForm] = useState({
     name: "",
     lname: "",
@@ -84,7 +84,7 @@ export const useAuth = () => {
         .catch((err) => {
           err.response?.data?.message
             ? toast(err.response.data.message, { type: "error" })
-            : toast("Unable to Login at the moment", { type: "error" });
+            : toast("Unable to register at the moment", { type: "error" });
           setAuthLoading(false);
         });
     } else if (form.password.length < 8) {
@@ -98,7 +98,7 @@ export const useAuth = () => {
     e.preventDefault();
     setAuthLoading(true);
     axios
-      .post(url(backendRoutes.forgot_password), {
+      .put(url(backendRoutes.forgot_password), {
         callback_url: `${frontendUrl}${publicRoutes.RESET_PASSWORD}`,
         email: form.email,
       })
@@ -109,9 +109,60 @@ export const useAuth = () => {
       .catch((err) => {
         err.response?.data?.message
           ? toast(err.response.data.emessage, { type: "error" })
-          : toast("Unable to register at the moment", { type: "error" });
+          : toast("Unable to process this request", { type: "error" });
         setAuthLoading(false);
       });
+  }
+  function handleVerifyAccount(e) {
+    e.preventDefault();
+    const query = new URLSearchParams(window.location.search);
+    const email = query.get("email");
+    const token = query.get("token");
+    setAuthLoading(true);
+    axios
+      .post(url(backendRoutes.reset_password), {
+        callback_url: `${frontendUrl}${publicRoutes.RESET_PASSWORD}`,
+        email: email,
+        token: token,
+      })
+      .then((res) => {
+        toast(res.data.message, { type: "success" });
+      })
+      .catch((err) => {
+        err.response?.data?.message
+          ? toast(err.response.data.emessage, { type: "error" })
+          : toast("Unable to verify aacount at the moment", { type: "error" });
+        setAuthLoading(false);
+      });
+  }
+  function handleResetpassword(e) {
+    e.preventDefault();
+    const query = new URLSearchParams(window.location.search);
+    const email = query.get("email");
+    const token = query.get("token");
+    if (form.password === form.password2) {
+      setAuthLoading(true);
+      axios
+        .post(url(backendRoutes.reset_password), {
+          password: form.password,
+          email: email,
+          token: token,
+        })
+        .then((res) => {
+          setForm({ password2: "", password: "" });
+          toast(res.data.message, { type: "success" });
+        })
+        .catch((err) => {
+          err.response?.data?.message
+            ? toast(err.response.data.emessage, { type: "error" })
+            : toast("Unable to reset password at the moment", {
+                type: "error",
+              });
+          setAuthLoading(false);
+        });
+    } else {
+      toast("Password Mismatch", { type: "error" });
+    }
   }
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -133,6 +184,8 @@ export const useAuth = () => {
     setValue,
     handleForgotpassword,
     logout,
+    handleResetpassword,
+    handleVerifyAccount,
   };
 };
 
@@ -165,6 +218,7 @@ export const usePropertyCategories = () => {
       .post(url(backendRoutes.admin_categories), params)
       .then((res) => {
         if (res.data.status === "success") {
+          getPropertyCategory();
           message.success(res.data.message);
         } else {
           message.error(res.data.message);
@@ -354,7 +408,26 @@ export const useConsultants = () => {
         cb && cb();
       });
   }
-
+  function registerConsultant(values, cb) {
+    setConsLoading(true);
+    axios
+      .post(url(backendRoutes.create_account), {
+        ...values,
+        phone_country: "NG",
+        callback_url: "https://demo-re.netlify.app/verify",
+      })
+      .then((res) => {
+        getConsultants();
+        toast(res.data.message, { type: "success" });
+        cb();
+      })
+      .catch((err) => {
+        err.response?.data?.message
+          ? toast(err.response.data.message, { type: "error" })
+          : toast("Unable to register at the moment", { type: "error" });
+        setConsLoading(false);
+      });
+  }
   useEffect(() => {
     getConsultants();
   }, []);
@@ -362,5 +435,102 @@ export const useConsultants = () => {
     getConsultants,
     consLoading,
     consultants,
+    registerConsultant,
+  };
+};
+export const useCommission = () => {
+  const [commLoading, setCommLoading] = useState(false);
+  const [commissions, setCommissions] = useState([]);
+  function getCommission(cb) {
+    setCommLoading(true);
+    axios
+      .get(url(backendRoutes.admin_commission))
+      .then((res) => {
+        if (res.data.status === "success") {
+          setCommissions(res.data.data);
+        } else {
+          message.error(res.data.message);
+        }
+        cb && cb();
+        setCommLoading(false);
+      })
+      .catch((err) => {
+        message.error("Unable to get commission");
+        setCommLoading(false);
+        cb && cb();
+      });
+  }
+
+  function addCommission(params, cb) {
+    setCommLoading(true);
+    axios
+      .post(url(backendRoutes.admin_commission), params)
+      .then((res) => {
+        if (res.data.status === "success") {
+          getCommission();
+          message.success(res.data.message);
+        } else {
+          message.error(res.data.message);
+        }
+        cb && cb();
+        setCommLoading(false);
+      })
+      .catch((err) => {
+        message.error("Unable to create commission");
+        setCommLoading(false);
+        cb && cb();
+      });
+  }
+  function deleteCommission(params, cb) {
+    setCommLoading(true);
+    axios
+      .delete(url(`${backendRoutes.admin_commission}/${params}/delete`))
+      .then((res) => {
+        if (res.data.status === "success") {
+          message.success(res.data.message);
+          getCommission();
+        } else {
+          message.error(res.data.message);
+        }
+        cb && cb();
+        setCommLoading(false);
+      })
+      .catch((err) => {
+        message.error(err.response.data.message);
+        setCommLoading(false);
+        cb && cb();
+      });
+  }
+  function editCommission(reqBody, id, cb) {
+    setCommLoading(true);
+    axios
+      .put(url(`${backendRoutes.admin_commission}/${id}/update`), reqBody)
+      .then((res) => {
+        if (res.data.status === "success") {
+          message.success(res.data.message);
+          setTimeout(() => window.location.reload(), 2000);
+          getCommission();
+        } else {
+          message.error(res.data.message);
+        }
+        cb && cb();
+        setCommLoading(false);
+      })
+      .catch((err) => {
+        message.error(err.response?.data?.message);
+        setCommLoading(false);
+        cb && cb();
+      });
+  }
+
+  useEffect(() => {
+    getCommission();
+  }, []);
+  return {
+    addCommission,
+    commLoading,
+    commissions,
+    deleteCommission,
+    editCommission,
   };
 };

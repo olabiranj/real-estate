@@ -15,15 +15,23 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from "react";
+import React, { useRef, useState } from "react";
 import { Card, CardHeader, CardBody, Row, Col } from "reactstrap";
-import { Tabs, Table } from "antd";
+import { Tabs, Table, Form, Input, Button } from "antd";
 import { addKeysToObj } from "services/helpers";
 import { useConsultants } from "services/hooks";
 const { TabPane } = Tabs;
 
 function Consultants() {
-  const { consultants, consLoading } = useConsultants();
+  const { consLoading, consultants, registerConsultant } = useConsultants();
+  const [tab, setTab] = useState("1");
+  let formRef = useRef();
+  const onReset = () => {
+    formRef.current.resetFields();
+  };
+  const onFinish = (values) => {
+    registerConsultant(values, onReset);
+  };
   const columns = [
     {
       title: "Name",
@@ -72,8 +80,116 @@ function Consultants() {
                 <p className="category"></p>
               </CardHeader>
               <CardBody className="all-icons">
-                <Tabs defaultActiveKey="1" activeKey="1">
-                  <TabPane tab={<span>View Consultants</span>} key="1">
+                <Tabs defaultActiveKey="1" activeKey={tab}>
+                  <TabPane
+                    tab={
+                      <span onClick={() => setTab("1")}>
+                        Register a consultant
+                      </span>
+                    }
+                    key="1"
+                  >
+                    <div className="row">
+                      <div className="col-md-6">
+                        <Form
+                          ref={formRef}
+                          name="basic"
+                          labelCol={{
+                            span: 8,
+                          }}
+                          wrapperCol={{
+                            span: 16,
+                          }}
+                          onFinish={onFinish}
+                          autoComplete="off"
+                        >
+                          <Form.Item
+                            label="First Name"
+                            name="name"
+                            rules={[
+                              {
+                                required: true,
+                                message: "Please enter first name",
+                              },
+                            ]}
+                          >
+                            <Input />
+                          </Form.Item>
+                          <Form.Item
+                            label="last Name"
+                            name="lname"
+                            rules={[
+                              {
+                                required: true,
+                                message: "Please enter a last name",
+                              },
+                            ]}
+                          >
+                            <Input />
+                          </Form.Item>
+                          <Form.Item
+                            label="Email"
+                            name="email"
+                            type="email"
+                            rules={[
+                              {
+                                required: true,
+                                message: "Please enter an email",
+                              },
+                            ]}
+                          >
+                            <Input />
+                          </Form.Item>
+                          <Form.Item
+                            label="Phone"
+                            name="phone"
+                            rules={[
+                              {
+                                required: true,
+                                message: "Please enter a phone",
+                              },
+                            ]}
+                          >
+                            <Input />
+                          </Form.Item>
+                          <Form.Item
+                            label="password"
+                            name="password"
+                            rules={[
+                              {
+                                required: true,
+                                message: "Please enter a password",
+                              },
+                            ]}
+                          >
+                            <Input.Password />
+                          </Form.Item>
+
+                          <Form.Item
+                            wrapperCol={{
+                              offset: 8,
+                              span: 16,
+                            }}
+                          >
+                            <Button
+                              type="primary"
+                              htmlType="submit"
+                              disabled={consLoading}
+                              loading={consLoading}
+                            >
+                              Submit
+                            </Button>
+                          </Form.Item>
+                        </Form>
+                      </div>
+                    </div>
+                  </TabPane>
+                  <TabPane
+                    tab={
+                      <span onClick={() => setTab("2")}>View Consultants</span>
+                    }
+                    key="2"
+                  >
                     <Table
                       scroll={{ x: 1300 }}
                       dataSource={addKeysToObj(consultants)}
