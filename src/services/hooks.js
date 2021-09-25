@@ -98,7 +98,7 @@ export const useAuth = () => {
     e.preventDefault();
     setAuthLoading(true);
     axios
-      .put(url(backendRoutes.forgot_password), {
+      .post(url(backendRoutes.forgot_password), {
         callback_url: `${frontendUrl}${publicRoutes.RESET_PASSWORD}`,
         email: form.email,
       })
@@ -143,7 +143,7 @@ export const useAuth = () => {
     if (form.password === form.password2) {
       setAuthLoading(true);
       axios
-        .post(url(backendRoutes.reset_password), {
+        .put(url(backendRoutes.reset_password), {
           password: form.password,
           email: email,
           token: token,
