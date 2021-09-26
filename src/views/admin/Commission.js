@@ -52,6 +52,7 @@ function Commission() {
         editData.id,
         onReset
       );
+    setEditData(null);
   };
   const [tab, setTab] = useState("1");
   const columns = [
@@ -302,7 +303,7 @@ function Commission() {
                           {editData && editData.id && (
                             <Form.Item
                               label="FourthGen"
-                              name="ourthGen"
+                              name="fourthGen"
                               initialValue={editData.fourth_gen}
                               rules={[
                                 {

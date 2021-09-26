@@ -78,6 +78,7 @@ export const publicRoutes = {
   REGISTER: "/register",
   FORGOT_PASSWORD: "/forgot_password",
   RESET_PASSWORD: "/reset_password",
+  VERIFY_ACCOUNT: "/verify_account",
 };
 
 export const backendRoutes = {
@@ -85,8 +86,8 @@ export const backendRoutes = {
   create_account: "/register",
   verify_account: "/verify",
   resend_verify: "/resend",
-  forgot_password: "/forgot",
-  reset_password: "/reset",
+  forgot_password: "/password/forgot",
+  reset_password: "/password/reset",
   get_user: "/user",
   // admin routes
   admin_categories: "/admin/categories",

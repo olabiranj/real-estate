@@ -41,6 +41,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Register from "views/Register";
 import ForgotPassword from "views/ForgotPassword";
 import ResetPassword from "views/ResetPassword";
+import VerifyAccount from "views/VerifyAccount";
 import "antd/dist/antd.css";
 
 axios.defaults.headers.common["client-id"] = "default";
@@ -77,6 +78,10 @@ ReactDOM.render(
               <Route
                 path={publicRoutes.RESET_PASSWORD}
                 render={(props) => <ResetPassword {...props} />}
+              />
+              <Route
+                path={publicRoutes.VERIFY_ACCOUNT}
+                render={(props) => <VerifyAccount {...props} />}
               />
               <Route
                 path={publicRoutes.HOME}

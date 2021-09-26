@@ -30,6 +30,7 @@ import routes from "routes.js";
 import logo from "assets/img/react-logo.png";
 import { BackgroundColorContext } from "contexts/BackgroundColorContext";
 import { useAuth } from "services/hooks";
+import Liners from "views/admin/Liners";
 
 var ps;
 
@@ -125,6 +126,7 @@ function Admin() {
                 sidebarOpened={sidebarOpened}
               />
               <Switch>
+                <Route path="/admin/liners/:id/:liner" component={Liners} />
                 {getRoutes(routes)}
                 <Redirect from="*" to="/admin/dashboard" />
               </Switch>

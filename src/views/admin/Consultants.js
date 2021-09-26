@@ -20,9 +20,11 @@ import { Card, CardHeader, CardBody, Row, Col } from "reactstrap";
 import { Tabs, Table, Form, Input, Button } from "antd";
 import { addKeysToObj } from "services/helpers";
 import { useConsultants } from "services/hooks";
+import { useHistory } from "react-router";
 const { TabPane } = Tabs;
 
 function Consultants() {
+  const history = useHistory();
   const { consLoading, consultants, registerConsultant } = useConsultants();
   const [tab, setTab] = useState("1");
   let formRef = useRef();
@@ -49,24 +51,31 @@ function Consultants() {
       title: "Referral Code",
       dataIndex: "referral_code",
     },
-    // {
-    //   title: "operations",
-    //   dataIndex: "operation",
-    //   render: (value, record) => (
-    //     <div className="d-flex">
-    //       <Button onClick={() => {}} className="mr-2" type="primary">
-    //         View Details
-    //       </Button>
+    {
+      title: "operations",
+      dataIndex: "operation",
+      render: (value, record) => (
+        <div className="d-flex">
+          <Button
+            onClick={() =>
+              history.push(`/admin/liners/${record.id}/downliners`)
+            }
+            className="mr-2"
+            type="primary"
+          >
+            View Downliner
+          </Button>
 
-    //       <Button onClick={() => {}} className="mr-2" type="primary">
-    //         Edit
-    //       </Button>
-    //       <Popconfirm title="Sure to delete?" onConfirm={() => {}}>
-    //         <Button danger>Delete</Button>
-    //       </Popconfirm>
-    //     </div>
-    //   ),
-    // },
+          <Button
+            onClick={() => history.push(`/admin/liners/${record.id}/upliners`)}
+            className="mr-2"
+            type="primary"
+          >
+            Upliner
+          </Button>
+        </div>
+      ),
+    },
   ];
 
   return (

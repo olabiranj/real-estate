@@ -4,18 +4,18 @@ import { useEffect, useState } from "react";
 import { LOGIN_SUCCESS, LOGOUT_SUCCESS } from "../redux/actions/types";
 import { url } from "./helpers";
 import { toast } from "react-toastify";
-import { useHistory } from "react-router";
+import { useHistory, useParams } from "react-router";
 import { backendRoutes } from "routes";
 import { publicRoutes } from "routes";
 import { message } from "antd";
 
+export const frontendUrl = "https://demo-re.netlify.app";
 export const useAuth = () => {
   const [value, setValue] = useState();
   const content = useSelector((root) => root.auth);
   const dispatch = useDispatch();
   const history = useHistory();
   let [authloading, setAuthLoading] = useState(false);
-  let frontendUrl = "https://demo-re.netlify.app/verify";
   const [form, setForm] = useState({
     name: "",
     lname: "",
@@ -28,12 +28,43 @@ export const useAuth = () => {
   });
   useEffect(() => {
     if (
-      !content.isAuthenticated &&
-      window.location.pathname.includes("/admin")
+      (!content.isAuthenticated &&
+        window.location.pathname.includes("/admin")) ||
+      (!content.isAuthenticated && window.location.pathname.includes("/user"))
     ) {
       dispatch({ type: LOGOUT_SUCCESS });
       setTimeout(() => localStorage.removeItem("token"), 1000);
       window.location.pathname = publicRoutes.LOGIN;
+    }
+    // eslint-disable-next-line
+  }, []);
+  useEffect(() => {
+    if (window.location.pathname === publicRoutes.VERIFY_ACCOUNT) {
+      const query = new URLSearchParams(window.location.search);
+      const email = query.get("email");
+      const token = query.get("token");
+      setAuthLoading(true);
+      axios
+        .post(url(backendRoutes.verify_account), { email, token })
+        .then((res) => {
+          if (res.data.status === "success") {
+            toast("Account Verified, Login to continue", { type: "success" });
+          } else {
+            toast(res.data.message, { type: "error" });
+          }
+          setTimeout(() => {
+            history.push(publicRoutes.LOGIN);
+          }, 2000);
+        })
+        .catch((err) => {
+          err.response?.data?.message
+            ? toast(err.response.data.message, { type: "error" })
+            : toast("Unable to verify account", { type: "error" });
+          setAuthLoading(false);
+          setTimeout(() => {
+            history.push(publicRoutes.LOGIN);
+          }, 2000);
+        });
     }
     // eslint-disable-next-line
   }, []);
@@ -67,7 +98,11 @@ export const useAuth = () => {
     e.preventDefault();
     if (form.password === form.password2) {
       axios
-        .post(url(backendRoutes.create_account), { ...form, phone: value })
+        .post(url(backendRoutes.create_account), {
+          ...form,
+          phone: value,
+          callback_url: `${frontendUrl}${publicRoutes.VERIFY_ACCOUNT}`,
+        })
         .then((res) => {
           setForm({
             name: "",
@@ -105,6 +140,7 @@ export const useAuth = () => {
       .then((res) => {
         setForm({ email: "", password: "" });
         toast(res.data.message, { type: "success" });
+        setAuthLoading(false);
       })
       .catch((err) => {
         err.response?.data?.message
@@ -127,6 +163,7 @@ export const useAuth = () => {
       })
       .then((res) => {
         toast(res.data.message, { type: "success" });
+        setAuthLoading(false);
       })
       .catch((err) => {
         err.response?.data?.message
@@ -151,6 +188,7 @@ export const useAuth = () => {
         .then((res) => {
           setForm({ password2: "", password: "" });
           toast(res.data.message, { type: "success" });
+          setAuthLoading(false);
         })
         .catch((err) => {
           err.response?.data?.message
@@ -259,7 +297,6 @@ export const usePropertyCategories = () => {
       .then((res) => {
         if (res.data.status === "success") {
           message.success(res.data.message);
-          setTimeout(() => window.location.reload(), 2000);
           getPropertyCategory();
         } else {
           message.error(res.data.message);
@@ -338,7 +375,6 @@ export const useProperties = () => {
       .then((res) => {
         if (res.data.status === "success") {
           message.success(res.data.message);
-          setTimeout(() => window.location.reload(), 2000);
           getProperties();
         } else {
           message.error(res.data.message);
@@ -414,7 +450,7 @@ export const useConsultants = () => {
       .post(url(backendRoutes.create_account), {
         ...values,
         phone_country: "NG",
-        callback_url: "https://demo-re.netlify.app/verify",
+        callback_url: `${frontendUrl}${publicRoutes.VERIFY_ACCOUNT}`,
       })
       .then((res) => {
         getConsultants();
@@ -424,7 +460,7 @@ export const useConsultants = () => {
       .catch((err) => {
         err.response?.data?.message
           ? toast(err.response.data.message, { type: "error" })
-          : toast("Unable to register at the moment", { type: "error" });
+          : toast("Unable to register user at the moment", { type: "error" });
         setConsLoading(false);
       });
   }
@@ -508,7 +544,6 @@ export const useCommission = () => {
       .then((res) => {
         if (res.data.status === "success") {
           message.success(res.data.message);
-          setTimeout(() => window.location.reload(), 2000);
           getCommission();
         } else {
           message.error(res.data.message);
@@ -533,4 +568,28 @@ export const useCommission = () => {
     deleteCommission,
     editCommission,
   };
+};
+export const useLiners = () => {
+  const [linersLoading, setLinersLoading] = useState(false);
+  const [liners, setLiners] = useState([]);
+  let { id, liner } = useParams();
+  console.log(id, liner);
+  useEffect(() => {
+    setLinersLoading(true);
+    axios
+      .get(url(`${backendRoutes.admin_consultants}/${id}/${liner}`))
+      .then((res) => {
+        if (res.data.status === "success") {
+          setLiners(res.data.data);
+        } else {
+          message.error(res.data.message);
+        }
+        setLinersLoading(false);
+      })
+      .catch((err) => {
+        message.error("Unable to get commission");
+        setLinersLoading(false);
+      });
+  }, [id, liner]);
+  return { linersLoading, liners };
 };

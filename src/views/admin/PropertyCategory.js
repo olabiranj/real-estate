@@ -44,6 +44,7 @@ function PropertyCategory() {
         editData.id,
         onReset
       );
+    setEditData(null);
   };
   const [tab, setTab] = useState("1");
   const columns = [

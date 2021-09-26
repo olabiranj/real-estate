@@ -25,17 +25,21 @@ const ResetPassword = () => {
               value={form.password}
               onChange={(e) => handleChange(e)}
               name="password"
-              placeholder="Enter new password"
+              pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+              title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
               required
+              placeholder="Enter new password"
             />
             <input
               type="password"
               className="fadeIn second my-4"
               value={form.password2}
+              pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+              title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
+              required
               onChange={(e) => handleChange(e)}
               name="password2"
               placeholder="Confirm password"
-              required
             />
             <input
               type="submit"

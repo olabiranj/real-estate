@@ -61,6 +61,7 @@ function Property() {
         editData.id,
         onReset
       );
+    setEditData(null);
   };
 
   const columns = [
@@ -83,6 +84,10 @@ function Property() {
             alt={record.property_images[0].image_url}
           />
         ),
+    },
+    {
+      title: "LandMark",
+      dataIndex: "landmark",
     },
     {
       title: "City",
@@ -406,6 +411,21 @@ function Property() {
                             </Form.Item>
                           )}
                           {editData === null && (
+                            <Form.Item label="Land Mark" name="landmark">
+                              <Input />
+                            </Form.Item>
+                          )}
+
+                          {editData && editData.id && (
+                            <Form.Item
+                              label="Land Mark"
+                              name="landmark"
+                              initialValue={editData.landmark}
+                            >
+                              <Input defaultValue={editData.landmark} />
+                            </Form.Item>
+                          )}
+                          {editData === null && (
                             <Form.Item
                               name="state"
                               label="State"
@@ -462,7 +482,7 @@ function Property() {
                               </Select>
                             </Form.Item>
                           )}
-                          {editData && editData && (
+                          {editData && editData.id && (
                             <Form.Item
                               name="property_category"
                               label="Category"
@@ -512,7 +532,7 @@ function Property() {
                               </Select>
                             </Form.Item>
                           )}
-                          {editData && editData && (
+                          {editData && editData.id && (
                             <Form.Item
                               name="property_commission"
                               label="Commission"
@@ -522,14 +542,14 @@ function Property() {
                                   message: "Please select a commission",
                                 },
                               ]}
-                              initialValue={editData.category.id}
+                              initialValue={editData.commission.id}
                             >
                               <Select
                                 placeholder="Select a property commission"
                                 allowClear
                               >
-                                <Select.Option value={editData.id}>
-                                  {editData.commission_name}
+                                <Select.Option value={editData.commission.id}>
+                                  {editData.commission.commission_name}
                                 </Select.Option>
                                 {commissions.map((commission, i) => (
                                   <Select.Option key={i} value={commission.id}>
