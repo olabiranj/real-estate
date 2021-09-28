@@ -75,7 +75,7 @@ export const userRoutes = [
 export const publicRoutes = {
   HOME: "/",
   LOGIN: "/login",
-  REGISTER: "/register",
+  REGISTER: "/register/:ref?",
   FORGOT_PASSWORD: "/forgot_password",
   RESET_PASSWORD: "/reset_password",
   VERIFY_ACCOUNT: "/verify_account",

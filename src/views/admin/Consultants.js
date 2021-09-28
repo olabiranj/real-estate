@@ -17,7 +17,7 @@
 */
 import React, { useRef, useState } from "react";
 import { Card, CardHeader, CardBody, Row, Col } from "reactstrap";
-import { Tabs, Table, Form, Input, Button } from "antd";
+import { Tabs, Table, Form, Input, Button, Drawer } from "antd";
 import { addKeysToObj } from "services/helpers";
 import { useConsultants } from "services/hooks";
 import { useHistory } from "react-router";
@@ -25,6 +25,8 @@ const { TabPane } = Tabs;
 
 function Consultants() {
   const history = useHistory();
+  const [visible, setVisible] = useState(false);
+  const [editData, setEditData] = useState(null);
   const { consLoading, consultants, registerConsultant } = useConsultants();
   const [tab, setTab] = useState("1");
   let formRef = useRef();
@@ -48,39 +50,74 @@ function Consultants() {
       dataIndex: "phone",
     },
     {
-      title: "Referral Code",
-      dataIndex: "referral_code",
-    },
-    {
       title: "operations",
       dataIndex: "operation",
       render: (value, record) => (
-        <div className="d-flex">
-          <Button
-            onClick={() =>
-              history.push(`/admin/liners/${record.id}/downliners`)
-            }
-            className="mr-2"
-            type="primary"
-          >
-            View Downliner
-          </Button>
-
-          <Button
-            onClick={() => history.push(`/admin/liners/${record.id}/upliners`)}
-            className="mr-2"
-            type="primary"
-          >
-            Upliner
-          </Button>
-        </div>
+        <Button
+          onClick={() => {
+            setEditData(record);
+            setVisible(true);
+          }}
+          className="mr-2"
+          type="primary"
+        >
+          View Details
+        </Button>
       ),
     },
   ];
+  const onClose = () => {
+    setVisible(false);
+  };
 
   return (
     <>
       <div className="content">
+        {editData && editData.id && (
+          <Drawer
+            placement="right"
+            onClose={onClose}
+            width={"400px"}
+            visible={visible}
+          >
+            <div className="mt-4 pt-4">
+              <h4 className="mt-4">Consultant Details</h4>
+              <p>
+                <span className="font-weight-bold">Name: </span>{" "}
+                {`${editData.name} ${editData.last_name}`}
+              </p>
+              <p>
+                <span className="font-weight-bold">Phone: </span>{" "}
+                {editData.phone}
+              </p>
+              <p>
+                <span className="font-weight-bold">Referral Code: </span>{" "}
+                {editData.referral_code}
+              </p>
+            </div>
+            <div className="d-flex">
+              <Button
+                onClick={() =>
+                  history.push(`/admin/liners/${editData.id}/downliners`)
+                }
+                className="mr-2"
+                type="primary"
+              >
+                View Downliner
+              </Button>
+
+              <Button
+                onClick={() =>
+                  history.push(`/admin/liners/${editData.id}/upliners`)
+                }
+                className="mr-2"
+                type="primary"
+              >
+                Upliner
+              </Button>
+            </div>
+          </Drawer>
+        )}
         <Row>
           <Col md="12">
             <Card>

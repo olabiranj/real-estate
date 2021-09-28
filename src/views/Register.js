@@ -81,6 +81,14 @@ const Register = () => {
               placeholder="Confirm password"
             />
             <input
+              type="text"
+              className="fadeIn third"
+              value={form.referral_code}
+              onChange={(e) => handleChange(e)}
+              name="referral_code"
+              placeholder="Referral code"
+            />
+            <input
               type="submit"
               className="fadeIn fourth"
               disabled={authloading}

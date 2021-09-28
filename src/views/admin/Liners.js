@@ -27,19 +27,22 @@ function Liners() {
   const columns = [
     {
       title: "Name",
-      render: (value, record) => `${record.name} ${record.last_name}`,
+      dataIndex: "name",
+      render: (value, record) => `${record.user.name} ${record.user.last_name}`,
     },
     {
       title: "Email",
       dataIndex: "email",
+      render: (value, record) => `${record.user.email}`,
     },
     {
       title: "Phone",
       dataIndex: "phone",
+      render: (value, record) => `${record.user.phone}`,
     },
     {
-      title: "Referral Code",
-      dataIndex: "referral_code",
+      title: "Generation",
+      dataIndex: "depth",
     },
   ];
 
@@ -50,7 +53,10 @@ function Liners() {
           <Col md="12">
             <Card>
               <CardHeader>
-                <h5 className="title">Liners</h5>
+                <h5 className="title">
+                  {window.location.pathname.includes("upliner") ? "Up" : "Down"}
+                  Liners
+                </h5>
                 <p className="category"></p>
               </CardHeader>
               <CardBody className="all-icons">

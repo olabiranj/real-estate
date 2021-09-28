@@ -24,6 +24,7 @@ export const useAuth = () => {
     phone_country: "NG",
     password: "",
     password2: "",
+    referral_code: "",
     callback_url: "",
   });
   useEffect(() => {
@@ -67,6 +68,12 @@ export const useAuth = () => {
         });
     }
     // eslint-disable-next-line
+  }, []);
+  const { ref } = useParams();
+  useEffect(() => {
+    if (window.location.pathname.includes("register")) {
+      setForm({ ...form, referral_code: ref });
+    } // eslint-disable-next-line
   }, []);
   function login(e) {
     e.preventDefault();
