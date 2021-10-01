@@ -583,20 +583,94 @@ export const useLiners = () => {
   console.log(id, liner);
   useEffect(() => {
     setLinersLoading(true);
+    if (window.location.pathname.includes("admin")) {
+      axios
+        .get(url(`${backendRoutes.admin_consultants}/${id}/${liner}`))
+        .then((res) => {
+          if (res.data.status === "success") {
+            setLiners(res.data.data);
+          } else {
+            message.error(res.data.message);
+          }
+          setLinersLoading(false);
+        })
+        .catch((err) => {
+          message.error("Unable to get commission");
+          setLinersLoading(false);
+        });
+    } else {
+      const newLiner = window.location.pathname.split("/")[2];
+      console.log(newLiner);
+      axios
+        .get(url(`${backendRoutes.user}/${newLiner}`))
+        .then((res) => {
+          if (res.data.status === "success") {
+            setLiners(res.data.data);
+          } else {
+            message.error(res.data.message);
+          }
+          setLinersLoading(false);
+        })
+        .catch((err) => {
+          message.error("Unable to get commission");
+          setLinersLoading(false);
+        });
+    }
+  }, [id, liner]);
+  return { linersLoading, liners };
+};
+export const useClient = () => {
+  const [clientLoading, setClientLoading] = useState(false);
+  const [client, setClient] = useState([]);
+  function getClient(cb) {
+    setClientLoading(true);
     axios
-      .get(url(`${backendRoutes.admin_consultants}/${id}/${liner}`))
+      .get(url(backendRoutes.user_client))
       .then((res) => {
         if (res.data.status === "success") {
-          setLiners(res.data.data);
+          setClient(res.data.data);
         } else {
           message.error(res.data.message);
         }
-        setLinersLoading(false);
+        cb && cb();
+        setClientLoading(false);
       })
       .catch((err) => {
-        message.error("Unable to get commission");
-        setLinersLoading(false);
+        err.response?.data?.message &&
+          message.error(err.response?.data?.message);
+        setClientLoading(false);
+        cb && cb();
       });
-  }, [id, liner]);
-  return { linersLoading, liners };
+    setClient(false);
+  }
+
+  function addClient(params, cb) {
+    setClientLoading(true);
+    axios
+      .post(url(backendRoutes.user_client), params)
+      .then((res) => {
+        if (res.data.status === "success") {
+          message.success(res.data.message);
+          cb && cb();
+          getClient();
+        } else {
+          message.error(res.data.message);
+        }
+        setClientLoading(false);
+      })
+      .catch((err) => {
+        message.error(err.response.data.message);
+        setClientLoading(false);
+        cb && cb();
+      });
+  }
+
+  useEffect(() => {
+    getClient();
+  }, []);
+  return {
+    addClient,
+    clientLoading,
+    client,
+  };
 };

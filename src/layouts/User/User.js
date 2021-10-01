@@ -30,6 +30,7 @@ import { userRoutes } from "routes.js";
 import logo from "assets/img/react-logo.png";
 import { BackgroundColorContext } from "contexts/BackgroundColorContext";
 import { useAuth } from "services/hooks";
+import ConsultantLiners from "views/user/ConsultantLiners";
 
 var ps;
 
@@ -129,6 +130,7 @@ function User() {
               />
               <Switch>
                 {getRoutes(userRoutes)}
+                <Route path="/user/:liner" component={ConsultantLiners} />
                 <Redirect from="*" to="/user/dashboard" />
               </Switch>
               {/* <Footer fluid /> */}

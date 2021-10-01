@@ -18,7 +18,7 @@ const Login = () => {
           </div>
 
           <h2 className="active"> Sign In </h2>
-          <Link to={publicRoutes.REGISTER} className="text-info">
+          <Link to={publicRoutes.REGISTER2} className="text-info">
             Register
           </Link>
 

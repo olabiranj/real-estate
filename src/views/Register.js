@@ -83,6 +83,7 @@ const Register = () => {
             <input
               type="text"
               className="fadeIn third"
+              required
               value={form.referral_code}
               onChange={(e) => handleChange(e)}
               name="referral_code"

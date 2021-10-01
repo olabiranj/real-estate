@@ -17,121 +17,95 @@
 */
 import React, { useRef, useState } from "react";
 import { Card, CardHeader, CardBody, Row, Col } from "reactstrap";
-import { Tabs, Table, Form, Input, Button, Drawer } from "antd";
-import { addKeysToObj } from "services/helpers";
-import { useConsultants } from "services/hooks";
-import { useHistory } from "react-router";
+import { Tabs, Form, Input, Button, Table } from "antd";
+import { useClient } from "services/hooks";
+import Password from "antd/lib/input/Password";
+import { frontendUrl } from "services/hooks";
+import { publicRoutes } from "routes";
+// import axios from "axios";
 const { TabPane } = Tabs;
 
-function Consultants() {
-  const history = useHistory();
-  const [visible, setVisible] = useState(false);
-  const [editData, setEditData] = useState(null);
-  const { consLoading, consultants, registerConsultant } = useConsultants();
+function Client() {
+  const { addClient, clientLoading, client } = useClient();
   const [tab, setTab] = useState("1");
   let formRef = useRef();
   const onReset = () => {
     formRef.current.resetFields();
   };
   const onFinish = (values) => {
-    registerConsultant(values, onReset);
+    addClient(
+      {
+        ...values,
+        phone_country: "NG",
+        callback_url: `${frontendUrl}${publicRoutes.VERIFY_ACCOUNT}`,
+      },
+      onReset
+    );
   };
+
   const columns = [
     {
       title: "Name",
-      render: (value, record) => `${record.name} ${record.last_name}`,
+      dataIndex: "id",
+      render: (value, row) => `${row.user.name} ${row.user.last_name}`,
     },
     {
       title: "Email",
-      dataIndex: "email",
+      dataIndex: "id",
+      render: (value, row) => row.user.email,
     },
     {
       title: "Phone",
-      dataIndex: "phone",
+      dataIndex: "id",
+      render: (value, row) => row.user.phone,
     },
     {
-      title: "operations",
-      dataIndex: "operation",
+      title: "Status",
+      dataIndex: "status",
+    },
+    {
+      title: "Phone",
+      dataIndex: "amount_paid",
+    },
+    {
+      title: "Phone",
+      dataIndex: "amount_remaining",
+    },
+
+    {
+      title: "",
+      dataIndex: "id",
       render: (value, record) => (
-        <Button
-          onClick={() => {
-            setEditData(record);
-            setVisible(true);
-          }}
-          className="mr-2"
-          type="primary"
-        >
-          View Details
-        </Button>
+        <div className="d-flex">
+          <Button
+            onClick={() => {
+              setTab("3");
+            }}
+            className="mr-2"
+            type="primary"
+          >
+            Assign Property
+          </Button>
+        </div>
       ),
     },
   ];
-  const onClose = () => {
-    setVisible(false);
-  };
 
   return (
     <>
       <div className="content">
-        {editData && editData.id && (
-          <Drawer
-            placement="right"
-            onClose={onClose}
-            width={"400px"}
-            visible={visible}
-          >
-            <div className="mt-4 pt-4">
-              <h4 className="mt-4">Consultant Details</h4>
-              <p>
-                <span className="font-weight-bold">Name: </span>{" "}
-                {`${editData.name} ${editData.last_name}`}
-              </p>
-              <p>
-                <span className="font-weight-bold">Phone: </span>{" "}
-                {editData.phone}
-              </p>
-              <p>
-                <span className="font-weight-bold">Referral Code: </span>{" "}
-                {editData.referral_code}
-              </p>
-            </div>
-            <div className="d-flex">
-              <Button
-                onClick={() =>
-                  history.push(`/admin/liners/${editData.id}/downliners`)
-                }
-                className="mr-2"
-                type="primary"
-              >
-                View Downliner
-              </Button>
-
-              <Button
-                onClick={() =>
-                  history.push(`/admin/liners/${editData.id}/upliners`)
-                }
-                className="mr-2"
-                type="primary"
-              >
-                Upliner
-              </Button>
-            </div>
-          </Drawer>
-        )}
         <Row>
           <Col md="12">
             <Card>
               <CardHeader>
-                <h5 className="title">Manage Consultants</h5>
+                <h5 className="title">Manage Client</h5>
                 <p className="category"></p>
               </CardHeader>
               <CardBody className="all-icons">
                 <Tabs defaultActiveKey="1" activeKey={tab}>
                   <TabPane
                     tab={
-                      <span onClick={() => setTab("1")}>
-                        Register a consultant
-                      </span>
+                      <span onClick={() => setTab("1")}>Create Property</span>
                     }
                     key="1"
                   >
@@ -155,19 +129,19 @@ function Consultants() {
                             rules={[
                               {
                                 required: true,
-                                message: "Please enter first name",
+                                message: "Please enter client's name",
                               },
                             ]}
                           >
                             <Input />
                           </Form.Item>
                           <Form.Item
-                            label="last Name"
+                            label="Last Name"
                             name="lname"
                             rules={[
                               {
                                 required: true,
-                                message: "Please enter a last name",
+                                message: "Please enter client's name",
                               },
                             ]}
                           >
@@ -176,7 +150,6 @@ function Consultants() {
                           <Form.Item
                             label="Email"
                             name="email"
-                            type="email"
                             rules={[
                               {
                                 required: true,
@@ -192,37 +165,24 @@ function Consultants() {
                             rules={[
                               {
                                 required: true,
-                                message: "Please enter a phone",
+                                message: "Please enter a phone number",
                               },
                             ]}
                           >
                             <Input />
                           </Form.Item>
                           <Form.Item
-                            label="password"
+                            label="Phone"
                             name="password"
                             rules={[
                               {
                                 required: true,
-                                message: "Please enter a password",
+                                message: "Please enter a password number",
                               },
                             ]}
                           >
-                            <Input.Password />
+                            <Password />
                           </Form.Item>
-                          <Form.Item
-                            label="Referral Code"
-                            name="referral_code"
-                            rules={[
-                              {
-                                required: true,
-                                message: "Please enter a referral code",
-                              },
-                            ]}
-                          >
-                            <Input.Password />
-                          </Form.Item>
-
                           <Form.Item
                             wrapperCol={{
                               offset: 8,
@@ -232,10 +192,10 @@ function Consultants() {
                             <Button
                               type="primary"
                               htmlType="submit"
-                              disabled={consLoading}
-                              loading={consLoading}
+                              disabled={clientLoading}
+                              loading={clientLoading}
                             >
-                              Submit
+                              Create
                             </Button>
                           </Form.Item>
                         </Form>
@@ -244,16 +204,55 @@ function Consultants() {
                   </TabPane>
                   <TabPane
                     tab={
-                      <span onClick={() => setTab("2")}>View Consultants</span>
+                      <span onClick={() => setTab("2")}>View Properties</span>
                     }
                     key="2"
                   >
                     <Table
                       scroll={{ x: 1300 }}
-                      dataSource={addKeysToObj(consultants)}
-                      loading={consLoading}
+                      dataSource={client}
+                      loading={clientLoading}
                       columns={columns}
                     />
+                  </TabPane>
+                  <TabPane
+                    tab={
+                      <span onClick={() => setTab("3")}>Assign Properties</span>
+                    }
+                    key="3"
+                  >
+                    <div className="row">
+                      <div className="col-md-6">
+                        <Form
+                          ref={formRef}
+                          name="basic"
+                          labelCol={{
+                            span: 8,
+                          }}
+                          wrapperCol={{
+                            span: 16,
+                          }}
+                          // onFinish={imageUpload}
+                          autoComplete="off"
+                        >
+                          <Form.Item
+                            wrapperCol={{
+                              offset: 8,
+                              span: 16,
+                            }}
+                          >
+                            {/* <Button
+                              type="primary"
+                              htmlType="submit"
+                              disabled={propLoading}
+                              loading={propLoading}
+                            >
+                              Upload
+                            </Button> */}
+                          </Form.Item>
+                        </Form>
+                      </div>
+                    </div>
                   </TabPane>
                 </Tabs>
               </CardBody>
@@ -265,4 +264,4 @@ function Consultants() {
   );
 }
 
-export default Consultants;
+export default Client;

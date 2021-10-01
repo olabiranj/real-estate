@@ -28,6 +28,8 @@ import {
   InputNumber,
   Upload,
   Drawer,
+  Tooltip,
+  Tag,
 } from "antd";
 import Icon from "@ant-design/icons";
 import { useProperties } from "services/hooks";
@@ -46,14 +48,20 @@ function Property() {
   const { propLoading, propertyCategories } = usePropertyCategories();
   const { commissions } = useCommission();
   const [editData, setEditData] = useState(null);
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(true);
+  const [unitArr, setUnitArr] = useState({
+    units: "",
+    square_meter: "",
+    arr: [],
+  });
   const [tab, setTab] = useState("1");
   let formRef = useRef();
   const onReset = () => {
     formRef.current.resetFields();
   };
   const onFinish = (values) => {
-    editData === null && addProperty(values, onReset);
+    editData === null &&
+      addProperty({ ...values, units: unitArr.arr }, onReset);
     editData &&
       editData.id &&
       editProperty(
@@ -62,6 +70,11 @@ function Property() {
         onReset
       );
     setEditData(null);
+    setUnitArr({
+      units: "",
+      square_meter: "",
+      arr: [],
+    });
   };
 
   const columns = [
@@ -226,6 +239,16 @@ function Property() {
                   />
                 ))}
               </div>
+              <div>
+                {editData.property_measurements.map((data) => (
+                  <p>
+                    <span className="font-weight-bold">Units</span>:{" "}
+                    {data.units},{" "}
+                    <span className="font-weight-bold">Square Meter:</span>{" "}
+                    {data.square_meter}
+                  </p>
+                ))}
+              </div>
             </div>
           </Drawer>
         )}
@@ -351,35 +374,7 @@ function Property() {
                               <Input defaultValue={editData.title_document} />
                             </Form.Item>
                           )}
-                          {editData === null && (
-                            <Form.Item
-                              label="Units"
-                              name="units"
-                              rules={[
-                                {
-                                  required: true,
-                                  message: "Please enter number of units",
-                                },
-                              ]}
-                            >
-                              <InputNumber />
-                            </Form.Item>
-                          )}
-                          {editData && editData.id && (
-                            <Form.Item
-                              label="Units"
-                              name="units"
-                              rules={[
-                                {
-                                  required: true,
-                                  message: "Please enter number of units",
-                                },
-                              ]}
-                              initialValue={editData.units}
-                            >
-                              <InputNumber defualtValue={editData.units} />
-                            </Form.Item>
-                          )}
+
                           {editData === null && (
                             <Form.Item
                               label="City"
@@ -635,6 +630,93 @@ function Property() {
                               </Select>
                             </Form.Item>
                           )}
+                          {unitArr.arr?.map((res, i) => (
+                            <Tooltip
+                              color="red"
+                              title="Click to delete"
+                              key={i}
+                            >
+                              <Tag
+                                onClick={() =>
+                                  setUnitArr({
+                                    ...unitArr,
+                                    arr: unitArr.arr.filter(
+                                      (data) => data !== res
+                                    ),
+                                  })
+                                }
+                              >
+                                U: {res.units}, SM: {res.square_meter}
+                              </Tag>
+                            </Tooltip>
+                          ))}
+                          <hr />
+                          {editData === null && (
+                            <div className="row">
+                              <div className="col-sm-4">
+                                <Form.Item
+                                  label="Units"
+                                  value={unitArr.units}
+                                  onChange={(e) =>
+                                    setUnitArr({
+                                      ...unitArr,
+                                      units: e.target.value,
+                                    })
+                                  }
+                                >
+                                  <InputNumber />
+                                </Form.Item>
+                              </div>
+                              <div className="col-sm-4">
+                                <Form.Item
+                                  label="Units"
+                                  value={unitArr.square_meter}
+                                  onChange={(e) =>
+                                    setUnitArr({
+                                      ...unitArr,
+                                      square_meter: e.target.value,
+                                    })
+                                  }
+                                >
+                                  <InputNumber />
+                                </Form.Item>
+                              </div>
+                              <div className="col-sm-4">
+                                <Button
+                                  type="primary"
+                                  onClick={() =>
+                                    setUnitArr({
+                                      ...unitArr,
+                                      arr: [
+                                        ...unitArr.arr,
+                                        {
+                                          units: unitArr.units,
+                                          square_meter: unitArr.square_meter,
+                                        },
+                                      ],
+                                    })
+                                  }
+                                >
+                                  Add
+                                </Button>
+                              </div>
+                            </div>
+                          )}
+                          {/* {editData && editData.id && (
+                            <Form.Item
+                              label="Units"
+                              name="units"
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Please enter number of units",
+                                },
+                              ]}
+                              initialValue={editData.units}
+                            >
+                              <InputNumber defualtValue={editData.units} />
+                            </Form.Item>
+                          )} */}
 
                           <Form.Item
                             wrapperCol={{
@@ -645,7 +727,7 @@ function Property() {
                             <Button
                               type="primary"
                               htmlType="submit"
-                              disabled={propLoading}
+                              disabled={propLoading || !unitArr.arr.length}
                               loading={propLoading}
                             >
                               {editData?.id ? "Update" : "Submit"}

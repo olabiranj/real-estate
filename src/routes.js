@@ -24,6 +24,8 @@ import Commission from "views/admin/Commission";
 // import Typography from "views/admin/Typography.js";
 // import UserProfile from "views/admin/UserProfile.js";
 import ConsultantDashboard from "views/user/ConsultantDashboard.js";
+import ConsultantLiners from "views/user/ConsultantLiners";
+import Client from "views/user/Client";
 
 var routes = [
   {
@@ -70,12 +72,34 @@ export const userRoutes = [
     component: ConsultantDashboard,
     layout: "/user",
   },
+  {
+    path: "/upliners",
+    name: "Upliners",
+    icon: "tim-icons icon-chart-pie-36",
+    component: ConsultantLiners,
+    layout: "/user",
+  },
+  {
+    path: "/downliners",
+    name: "Downliners",
+    icon: "tim-icons icon-chart-pie-36",
+    component: ConsultantLiners,
+    layout: "/user",
+  },
+  {
+    path: "/client",
+    name: "Client",
+    icon: "tim-icons icon-chart-pie-36",
+    component: Client,
+    layout: "/user",
+  },
 ];
 
 export const publicRoutes = {
   HOME: "/",
   LOGIN: "/login",
   REGISTER: "/register/:ref?",
+  REGISTER2: "/register",
   FORGOT_PASSWORD: "/forgot_password",
   RESET_PASSWORD: "/reset_password",
   VERIFY_ACCOUNT: "/verify_account",
@@ -94,5 +118,9 @@ export const backendRoutes = {
   admin_properties: "/admin/properties",
   admin_consultants: "/admin/consultants",
   admin_commission: "/admin/commissions",
+
+  // consultant routes
+  user: "/consultant",
+  user_client: "/consultant/clients",
 };
 export default routes;
