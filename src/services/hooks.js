@@ -653,6 +653,28 @@ export const useClient = () => {
           message.success(res.data.message);
           cb && cb();
           getClient();
+          setTimeout(() => {
+            window.location.pathname = `/user/client/${res.data.data.client.id}`;
+          }, 1500);
+        } else {
+          message.error(res.data.message);
+        }
+        setClientLoading(false);
+      })
+      .catch((err) => {
+        message.error(err.response.data.message);
+        setClientLoading(false);
+      });
+  }
+  function assignProperty(params, cb) {
+    setClientLoading(true);
+    axios
+      .put(url(backendRoutes.user_client), params)
+      .then((res) => {
+        if (res.data.status === "success") {
+          message.success(res.data.message);
+          cb && cb();
+          getClient();
         } else {
           message.error(res.data.message);
         }
@@ -672,5 +694,53 @@ export const useClient = () => {
     addClient,
     clientLoading,
     client,
+    assignProperty,
+  };
+};
+export const useMessaging = () => {
+  const [messagingLoading, setMessagingLoading] = useState(false);
+  function sendSms(params, cb) {
+    setMessagingLoading(true);
+    axios
+      .post(url(backendRoutes.admin_sms), params)
+      .then((res) => {
+        if (res.data.status === "success") {
+          message.success(res.data.message);
+          cb && cb();
+        } else {
+          message.error(res.data.message);
+        }
+        setMessagingLoading(false);
+      })
+      .catch((err) => {
+        message.error(err.response.data.message);
+        setMessagingLoading(false);
+        cb && cb();
+      });
+  }
+  function sendEmail(params, cb) {
+    setMessagingLoading(true);
+    axios
+      .post(url(backendRoutes.admin_email), params)
+      .then((res) => {
+        if (res.data.status === "success") {
+          message.success(res.data.message);
+          cb && cb();
+        } else {
+          message.error(res.data.message);
+        }
+        setMessagingLoading(false);
+      })
+      .catch((err) => {
+        message.error(err.response.data.message);
+        setMessagingLoading(false);
+        cb && cb();
+      });
+  }
+
+  return {
+    messagingLoading,
+    sendSms,
+    sendEmail,
   };
 };

@@ -15,14 +15,14 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Card, CardHeader, CardBody, Row, Col } from "reactstrap";
 import { Tabs, Form, Input, Button, Table } from "antd";
 import { useClient } from "services/hooks";
 import Password from "antd/lib/input/Password";
 import { frontendUrl } from "services/hooks";
 import { publicRoutes } from "routes";
-// import axios from "axios";
+import { addKeysToObj } from "services/helpers";
 const { TabPane } = Tabs;
 
 function Client() {
@@ -42,6 +42,11 @@ function Client() {
       onReset
     );
   };
+
+  useEffect(() => {
+    const id = window.location.pathname.split("/")[3];
+    id && setTab("3");
+  }, []);
 
   const columns = [
     {
@@ -64,11 +69,11 @@ function Client() {
       dataIndex: "status",
     },
     {
-      title: "Phone",
+      title: "Amount Paid",
       dataIndex: "amount_paid",
     },
     {
-      title: "Phone",
+      title: "Amount Remaining",
       dataIndex: "amount_remaining",
     },
 
@@ -104,9 +109,7 @@ function Client() {
               <CardBody className="all-icons">
                 <Tabs defaultActiveKey="1" activeKey={tab}>
                   <TabPane
-                    tab={
-                      <span onClick={() => setTab("1")}>Create Property</span>
-                    }
+                    tab={<span onClick={() => setTab("1")}>Create Client</span>}
                     key="1"
                   >
                     <div className="row">
@@ -172,7 +175,7 @@ function Client() {
                             <Input />
                           </Form.Item>
                           <Form.Item
-                            label="Phone"
+                            label="Password"
                             name="password"
                             rules={[
                               {
@@ -203,14 +206,12 @@ function Client() {
                     </div>
                   </TabPane>
                   <TabPane
-                    tab={
-                      <span onClick={() => setTab("2")}>View Properties</span>
-                    }
+                    tab={<span onClick={() => setTab("2")}>View Client</span>}
                     key="2"
                   >
                     <Table
                       scroll={{ x: 1300 }}
-                      dataSource={client}
+                      dataSource={addKeysToObj(client)}
                       loading={clientLoading}
                       columns={columns}
                     />

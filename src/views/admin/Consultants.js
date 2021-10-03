@@ -220,7 +220,7 @@ function Consultants() {
                               },
                             ]}
                           >
-                            <Input.Password />
+                            <Input />
                           </Form.Item>
 
                           <Form.Item
