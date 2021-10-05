@@ -566,6 +566,7 @@ function Property() {
                               ]}
                             >
                               <InputNumber
+                                style={{ width: "100%" }}
                                 formatter={(value) =>
                                   `N ${value}`.replace(
                                     /\B(?=(\d{3})+(?!\d))/g,
@@ -592,6 +593,7 @@ function Property() {
                               initialValue={editData.price}
                             >
                               <InputNumber
+                                style={{ width: "100%" }}
                                 defaultValue={editData.price}
                                 formatter={(value) =>
                                   `N ${value}`.replace(

@@ -352,7 +352,7 @@ export const useProperties = () => {
         setPropLoading(false);
         cb && cb();
       });
-    setProperties(false);
+    setPropLoading(false);
   }
 
   function addProperty(params, cb) {
@@ -666,10 +666,10 @@ export const useClient = () => {
         setClientLoading(false);
       });
   }
-  function assignProperty(params, cb) {
+  function assignProperty(params, id, cb) {
     setClientLoading(true);
     axios
-      .put(url(backendRoutes.user_client), params)
+      .put(url(`${backendRoutes.user_client}/${id}/update`), params)
       .then((res) => {
         if (res.data.status === "success") {
           message.success(res.data.message);

@@ -17,20 +17,25 @@
 */
 import React, { useEffect, useRef, useState } from "react";
 import { Card, CardHeader, CardBody, Row, Col } from "reactstrap";
-import { Tabs, Form, Input, Button, Table } from "antd";
+import { Tabs, Form, Input, Button, Table, Select, InputNumber } from "antd";
 import { useClient } from "services/hooks";
 import Password from "antd/lib/input/Password";
 import { frontendUrl } from "services/hooks";
 import { publicRoutes } from "routes";
 import { addKeysToObj } from "services/helpers";
+import { useProperties } from "services/hooks";
 const { TabPane } = Tabs;
 
 function Client() {
-  const { addClient, clientLoading, client } = useClient();
+  const { properties } = useProperties();
+  const { addClient, clientLoading, client, assignProperty } = useClient();
+  const [p_measure, setP_measure] = useState(null);
+  const [id, setId] = useState(null);
   const [tab, setTab] = useState("1");
   let formRef = useRef();
   const onReset = () => {
     formRef.current.resetFields();
+    setId(null);
   };
   const onFinish = (values) => {
     addClient(
@@ -42,12 +47,14 @@ function Client() {
       onReset
     );
   };
+  const onFinish2 = (values) => {
+    assignProperty(values, id, onReset);
+  };
 
   useEffect(() => {
     const id = window.location.pathname.split("/")[3];
     id && setTab("3");
   }, []);
-
   const columns = [
     {
       title: "Name",
@@ -82,15 +89,28 @@ function Client() {
       dataIndex: "id",
       render: (value, record) => (
         <div className="d-flex">
-          <Button
-            onClick={() => {
-              setTab("3");
-            }}
-            className="mr-2"
-            type="primary"
-          >
-            Assign Property
-          </Button>
+          {record.property_id === null ? (
+            <Button
+              onClick={() => {
+                setId(record.id);
+                setTab("3");
+              }}
+              className="mr-2"
+              type="primary"
+            >
+              Assign Property
+            </Button>
+          ) : (
+            <Button
+              onClick={() => {
+                setTab("3");
+              }}
+              className="mr-2"
+              type="primary"
+            >
+              Edit Property
+            </Button>
+          )}
         </div>
       ),
     },
@@ -226,6 +246,7 @@ function Client() {
                       <div className="col-md-6">
                         <Form
                           ref={formRef}
+                          onFinish={onFinish2}
                           name="basic"
                           labelCol={{
                             span: 8,
@@ -237,20 +258,117 @@ function Client() {
                           autoComplete="off"
                         >
                           <Form.Item
-                            wrapperCol={{
-                              offset: 8,
-                              span: 16,
-                            }}
+                            label="Property"
+                            name="property"
+                            rules={[
+                              {
+                                required: true,
+                                message: "Please select a property",
+                              },
+                            ]}
                           >
-                            {/* <Button
-                              type="primary"
-                              htmlType="submit"
-                              disabled={propLoading}
-                              loading={propLoading}
-                            >
-                              Upload
-                            </Button> */}
+                            <Select placeholder="Select a property" allowClear>
+                              {/* <Select.Option value={editData.state}>
+                                {editData.state}
+                              </Select.Option> */}
+                              {properties?.map((prpty, i) => (
+                                <Select.Option key={i} value={prpty.id}>
+                                  <div
+                                    className="col-12"
+                                    onClick={() =>
+                                      setP_measure(prpty.property_measurements)
+                                    }
+                                  >
+                                    {prpty.property_name}
+                                  </div>
+                                </Select.Option>
+                              ))}
+                            </Select>
                           </Form.Item>
+
+                          {p_measure && (
+                            <>
+                              <Form.Item
+                                label="Property Measurement"
+                                name="property_measurement"
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: "Please enter a property",
+                                  },
+                                ]}
+                              >
+                                <Select
+                                  placeholder="Select a property measurement"
+                                  allowClear
+                                >
+                                  {/* <Select.Option value={editData.state}>
+                                {editData.state}
+                              </Select.Option> */}
+                                  {p_measure?.map((prpty, i) => (
+                                    <Select.Option key={i} value={prpty.id}>
+                                      <span
+                                        onClick={() =>
+                                          console.log(
+                                            prpty.property_measurements
+                                          )
+                                        }
+                                      >
+                                        Units: {prpty.units}, Sqr Mtr.:
+                                        {prpty.square_meter}
+                                      </span>
+                                    </Select.Option>
+                                  ))}
+                                </Select>
+                              </Form.Item>
+                              <Form.Item
+                                label="Initial Amount"
+                                name="initial_amount"
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: "Please enter initial amount",
+                                  },
+                                ]}
+                              >
+                                <InputNumber
+                                  style={{ width: "100%" }}
+                                  formatter={(value) =>
+                                    `N ${value}`.replace(
+                                      /\B(?=(\d{3})+(?!\d))/g,
+                                      ","
+                                    )
+                                  }
+                                  parser={(value) =>
+                                    // eslint-disable-next-line
+                                    value.replace(/\N\s?|(,*)/g, "")
+                                  }
+                                />
+                              </Form.Item>
+                              <Form.Item
+                                label="Units"
+                                name="units"
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: "Please enter no. of units",
+                                  },
+                                ]}
+                              >
+                                <InputNumber />
+                              </Form.Item>
+                              <Form.Item
+                                wrapperCol={{
+                                  offset: 8,
+                                  span: 16,
+                                }}
+                              >
+                                <Button type="primary" htmlType="submit">
+                                  Submit
+                                </Button>
+                              </Form.Item>
+                            </>
+                          )}
                         </Form>
                       </div>
                     </div>

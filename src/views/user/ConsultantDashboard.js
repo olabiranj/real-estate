@@ -50,7 +50,7 @@ function ConsultantDashboard(props) {
     <>
       <div className="content">
         <Row>
-          <Col lg="6">
+          <Col lg="4">
             <Card className="card-chart">
               <CardHeader>
                 <h5 className="card-category">Daily Sales</h5>
@@ -69,7 +69,7 @@ function ConsultantDashboard(props) {
               </CardBody>
             </Card>
           </Col>
-          <Col lg="6">
+          <Col lg="4">
             <Card className=" p-3">
               <CardHeader>
                 <h4 className="card-category">Hello,</h4>
@@ -99,6 +99,25 @@ function ConsultantDashboard(props) {
                 <Button block onClick={() => history.push("/user/client")}>
                   Create Client
                 </Button>
+              </CardBody>
+            </Card>
+          </Col>
+          <Col lg="4">
+            <Card className="card-chart">
+              <CardHeader>
+                <h5 className="card-category">Daily Sales</h5>
+                <CardTitle tag="h3">
+                  <i className="tim-icons icon-delivery-fast text-primary" />{" "}
+                  3,500€
+                </CardTitle>
+              </CardHeader>
+              <CardBody>
+                <div className="chart-area">
+                  <Bar
+                    data={chartExample3.data}
+                    options={chartExample3.options}
+                  />
+                </div>
               </CardBody>
             </Card>
           </Col>
