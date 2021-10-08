@@ -48,3 +48,7 @@ export function addKeysToObj(params) {
   params && params.map((data, index) => arr.push({ key: index, ...data }));
   return arr;
 }
+
+export const toCurrency = (num) => {
+  return num.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,");
+};

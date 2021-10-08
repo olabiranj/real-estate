@@ -27,6 +27,7 @@ import ConsultantDashboard from "views/user/ConsultantDashboard.js";
 import ConsultantLiners from "views/user/ConsultantLiners";
 import Client from "views/user/Client";
 import Messaging from "views/admin/Messaging";
+import Deals from "views/admin/Deals";
 
 var routes = [
   {
@@ -62,6 +63,13 @@ var routes = [
     name: "Consultants",
     icon: "tim-icons icon-bell-55",
     component: Consultants,
+    layout: "/admin",
+  },
+  {
+    path: "/deals",
+    name: "Deals",
+    icon: "tim-icons icon-bell-55",
+    component: Deals,
     layout: "/admin",
   },
   {
@@ -126,6 +134,7 @@ export const backendRoutes = {
   admin_properties: "/admin/properties",
   admin_consultants: "/admin/consultants",
   admin_commission: "/admin/commissions",
+  admin_deals: "/admin/deals",
   admin_sms: "/admin/send-messages/bulksms",
   admin_email: "/admin/send-messages/bulkemail",
 

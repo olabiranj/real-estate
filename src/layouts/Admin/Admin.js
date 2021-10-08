@@ -31,6 +31,8 @@ import logo from "assets/img/react-logo.png";
 import { BackgroundColorContext } from "contexts/BackgroundColorContext";
 import { useAuth } from "services/hooks";
 import Liners from "views/admin/Liners";
+import DealsHistory from "views/admin/DealHistory";
+import UserProfile from "views/general/UserProfile";
 
 var ps;
 
@@ -126,6 +128,11 @@ function Admin() {
                 sidebarOpened={sidebarOpened}
               />
               <Switch>
+                <Route path="/admin/profile" component={UserProfile} />
+                <Route
+                  path="/admin/deal-history/:id"
+                  component={DealsHistory}
+                />
                 <Route path="/admin/liners/:id/:liner" component={Liners} />
                 {getRoutes(routes)}
                 <Redirect from="*" to="/admin/dashboard" />

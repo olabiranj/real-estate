@@ -744,3 +744,58 @@ export const useMessaging = () => {
     sendEmail,
   };
 };
+export const useDeals = () => {
+  const [dealsLoading, setDealsLoading] = useState(false);
+  const [deals, setDeals] = useState({
+    all: [],
+    ongoing: [],
+    closed: [],
+    history: [],
+  });
+  function getDeals(type) {
+    setDealsLoading(true);
+    axios
+      .get(url(`${backendRoutes.admin_deals}/${type}`))
+      .then((res) => {
+        if (res.data.status === "success") {
+          const tempDeal = { ...deals };
+          tempDeal[type] = res.data.data;
+          setDeals(tempDeal);
+        } else {
+          message.error(res.data.message);
+        }
+        setDealsLoading(false);
+      })
+      .catch((err) => {
+        message.error("Unable to get deals");
+        setDealsLoading(false);
+      });
+  }
+  function getDealHistory(id) {
+    setDealsLoading(true);
+    axios
+      .get(url(`${backendRoutes.admin_deals}/${id}/show`))
+      .then((res) => {
+        if (res.data.status === "success") {
+          setDeals({
+            ...deals,
+            history: res.data.data.client_transaction_history,
+          });
+        } else {
+          message.error(res.data.message);
+        }
+        setDealsLoading(false);
+      })
+      .catch((err) => {
+        message.error("Unable to get history");
+        setDealsLoading(false);
+      });
+  }
+
+  return {
+    getDealHistory,
+    getDeals,
+    deals,
+    dealsLoading,
+  };
+};

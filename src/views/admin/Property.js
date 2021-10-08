@@ -666,12 +666,12 @@ function Property() {
                                     })
                                   }
                                 >
-                                  <InputNumber />
+                                  <InputNumber value={unitArr.units} />
                                 </Form.Item>
                               </div>
                               <div className="col-sm-4">
                                 <Form.Item
-                                  label="Units"
+                                  label="Sqr. Mtr."
                                   value={unitArr.square_meter}
                                   onChange={(e) =>
                                     setUnitArr({
@@ -680,15 +680,17 @@ function Property() {
                                     })
                                   }
                                 >
-                                  <InputNumber />
+                                  <InputNumber value={unitArr.square_meter} />
                                 </Form.Item>
                               </div>
                               <div className="col-sm-4">
                                 <Button
                                   type="primary"
+                                  disabled={
+                                    !unitArr.units || !unitArr.square_meter
+                                  }
                                   onClick={() =>
                                     setUnitArr({
-                                      ...unitArr,
                                       arr: [
                                         ...unitArr.arr,
                                         {
@@ -696,6 +698,8 @@ function Property() {
                                           square_meter: unitArr.square_meter,
                                         },
                                       ],
+                                      units: "",
+                                      square_meter: "",
                                     })
                                   }
                                 >

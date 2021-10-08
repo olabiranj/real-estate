@@ -38,6 +38,8 @@ import {
   NavbarToggler,
   ModalHeader,
 } from "reactstrap";
+import { useHistory } from "react-router";
+import { useSelector } from "react-redux";
 
 function AdminNavbar(props) {
   const [collapseOpen, setcollapseOpen] = React.useState(false);
@@ -71,6 +73,8 @@ function AdminNavbar(props) {
   const toggleModalSearch = () => {
     setmodalSearch(!modalSearch);
   };
+  const history = useHistory();
+  const role = useSelector((state) => state.auth.user.data.roles[0].name);
   return (
     <>
       <Navbar className={classNames("navbar-absolute", color)} expand="lg">
@@ -161,7 +165,16 @@ function AdminNavbar(props) {
                 </DropdownToggle>
                 <DropdownMenu className="dropdown-navbar" right tag="ul">
                   <NavLink tag="li">
-                    <DropdownItem className="nav-item">Profile</DropdownItem>
+                    <DropdownItem
+                      onClick={() =>
+                        history.push(
+                          role === "admin" ? "/admin/profile" : "/user/profile"
+                        )
+                      }
+                      className="nav-item"
+                    >
+                      Profile
+                    </DropdownItem>
                   </NavLink>
                   <NavLink tag="li">
                     <DropdownItem className="nav-item">Settings</DropdownItem>

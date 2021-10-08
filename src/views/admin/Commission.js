@@ -172,7 +172,7 @@ function Commission() {
 
                           {editData === null && (
                             <Form.Item
-                              label="Amount"
+                              label="Percentage"
                               name="amount"
                               rules={[
                                 {
@@ -186,7 +186,7 @@ function Commission() {
                           )}
                           {editData && editData.id && (
                             <Form.Item
-                              label="Amount"
+                              label="Percentage"
                               name="amount"
                               initialValue={editData.total_commission}
                               rules={[
