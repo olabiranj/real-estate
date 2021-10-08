@@ -32,10 +32,12 @@ function Client() {
   const [p_measure, setP_measure] = useState(null);
   const [id, setId] = useState(null);
   const [tab, setTab] = useState("1");
+  const [editData, setEditData] = useState(null);
   let formRef = useRef();
   const onReset = () => {
     formRef.current.resetFields();
     setId(null);
+    setTab("2");
   };
   const onFinish = (values) => {
     addClient(
@@ -48,7 +50,9 @@ function Client() {
     );
   };
   const onFinish2 = (values) => {
-    assignProperty(values, id, onReset);
+    editData === null
+      ? assignProperty(values, id, onReset)
+      : assignProperty({ ...editData, ...values }, id, onReset);
   };
 
   useEffect(() => {
@@ -104,11 +108,18 @@ function Client() {
             <Button
               onClick={() => {
                 setTab("3");
+                setId(record.id);
+                setEditData({
+                  property: record.property_id,
+                  property_measurement: record.property_measurement_id,
+                  initial_amount: record.amount_paid,
+                  units: record.units,
+                });
               }}
               className="mr-2"
               type="primary"
             >
-              Edit Property
+              Update Property
             </Button>
           )}
         </div>
@@ -238,140 +249,200 @@ function Client() {
                   </TabPane>
                   <TabPane
                     tab={
-                      <span onClick={() => setTab("3")}>
-                        Assign Properties to clients
+                      <span onClick={() => id !== null && setTab("3")}>
+                        Assign Properties to existing clients
                       </span>
                     }
+                    disabled={id === null ? true : false}
                     key="3"
                   >
                     <div className="row">
                       <div className="col-md-6">
-                        <Form
-                          ref={formRef}
-                          onFinish={onFinish2}
-                          name="basic"
-                          labelCol={{
-                            span: 8,
-                          }}
-                          wrapperCol={{
-                            span: 16,
-                          }}
-                          // onFinish={imageUpload}
-                          autoComplete="off"
-                        >
-                          <Form.Item
-                            label="Property"
-                            name="property"
-                            rules={[
-                              {
-                                required: true,
-                                message: "Please select a property",
-                              },
-                            ]}
+                        {editData === null ? (
+                          <Form
+                            ref={formRef}
+                            onFinish={onFinish2}
+                            name="basic"
+                            labelCol={{
+                              span: 8,
+                            }}
+                            wrapperCol={{
+                              span: 16,
+                            }}
+                            // onFinish={imageUpload}
+                            autoComplete="off"
                           >
-                            <Select placeholder="Select a property" allowClear>
-                              {/* <Select.Option value={editData.state}>
+                            <Form.Item
+                              label="Property"
+                              name="property"
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Please select a property",
+                                },
+                              ]}
+                            >
+                              <Select
+                                placeholder="Select a property"
+                                allowClear
+                              >
+                                {/* <Select.Option value={editData.state}>
                                 {editData.state}
                               </Select.Option> */}
-                              {properties?.map((prpty, i) => (
-                                <Select.Option key={i} value={prpty.id}>
-                                  <div
-                                    className="col-12"
-                                    onClick={() =>
-                                      setP_measure(prpty.property_measurements)
-                                    }
-                                  >
-                                    {prpty.property_name}
-                                  </div>
-                                </Select.Option>
-                              ))}
-                            </Select>
-                          </Form.Item>
+                                {properties?.map((prpty, i) => (
+                                  <Select.Option key={i} value={prpty.id}>
+                                    <div
+                                      className="col-12"
+                                      onClick={() =>
+                                        setP_measure(
+                                          prpty.property_measurements
+                                        )
+                                      }
+                                    >
+                                      {prpty.property_name}
+                                    </div>
+                                  </Select.Option>
+                                ))}
+                              </Select>
+                            </Form.Item>
 
-                          {p_measure && (
-                            <>
-                              <Form.Item
-                                label="Property Measurement"
-                                name="property_measurement"
-                                rules={[
-                                  {
-                                    required: true,
-                                    message: "Please enter a property",
-                                  },
-                                ]}
-                              >
-                                <Select
-                                  placeholder="Select a property measurement"
-                                  allowClear
+                            {p_measure && (
+                              <>
+                                <Form.Item
+                                  label="Property Measurement"
+                                  name="property_measurement"
+                                  rules={[
+                                    {
+                                      required: true,
+                                      message: "Please enter a property",
+                                    },
+                                  ]}
                                 >
-                                  {/* <Select.Option value={editData.state}>
+                                  <Select
+                                    placeholder="Select a property measurement"
+                                    allowClear
+                                  >
+                                    {/* <Select.Option value={editData.state}>
                                 {editData.state}
                               </Select.Option> */}
-                                  {p_measure?.map((prpty, i) => (
-                                    <Select.Option key={i} value={prpty.id}>
-                                      <span
-                                        onClick={() =>
-                                          console.log(
-                                            prpty.property_measurements
-                                          )
-                                        }
-                                      >
-                                        Units: {prpty.units}, Sqr Mtr.:
-                                        {prpty.square_meter}
-                                      </span>
-                                    </Select.Option>
-                                  ))}
-                                </Select>
-                              </Form.Item>
-                              <Form.Item
-                                label="Initial Amount"
-                                name="initial_amount"
-                                rules={[
-                                  {
-                                    required: true,
-                                    message: "Please enter initial amount",
-                                  },
-                                ]}
-                              >
-                                <InputNumber
-                                  style={{ width: "100%" }}
-                                  formatter={(value) =>
-                                    `N ${value}`.replace(
-                                      /\B(?=(\d{3})+(?!\d))/g,
-                                      ","
-                                    )
-                                  }
-                                  parser={(value) =>
-                                    // eslint-disable-next-line
-                                    value.replace(/\N\s?|(,*)/g, "")
-                                  }
-                                />
-                              </Form.Item>
-                              <Form.Item
-                                label="Units"
-                                name="units"
-                                rules={[
-                                  {
-                                    required: true,
-                                    message: "Please enter no. of units",
-                                  },
-                                ]}
-                              >
-                                <InputNumber />
-                              </Form.Item>
-                              <Form.Item
-                                wrapperCol={{
-                                  offset: 8,
-                                  span: 16,
-                                }}
-                              >
-                                <Button type="primary" htmlType="submit">
-                                  Submit
-                                </Button>
-                              </Form.Item>
-                            </>
-                          )}
-                        </Form>
+                                    {p_measure?.map((prpty, i) => (
+                                      <Select.Option key={i} value={prpty.id}>
+                                        <span
+                                          onClick={() =>
+                                            console.log(
+                                              prpty.property_measurements
+                                            )
+                                          }
+                                        >
+                                          Units: {prpty.units}, Sqr Mtr.:
+                                          {prpty.square_meter}
+                                        </span>
+                                      </Select.Option>
+                                    ))}
+                                  </Select>
+                                </Form.Item>
+                                <Form.Item
+                                  label="Initial Amount"
+                                  name="initial_amount"
+                                  rules={[
+                                    {
+                                      required: true,
+                                      message: "Please enter initial amount",
+                                    },
+                                  ]}
+                                >
+                                  <InputNumber
+                                    style={{ width: "100%" }}
+                                    formatter={(value) =>
+                                      `N ${value}`.replace(
+                                        /\B(?=(\d{3})+(?!\d))/g,
+                                        ","
+                                      )
+                                    }
+                                    parser={(value) =>
+                                      // eslint-disable-next-line
+                                      value.replace(/\N\s?|(,*)/g, "")
+                                    }
+                                  />
+                                </Form.Item>
+                                <Form.Item
+                                  label="Units"
+                                  name="units"
+                                  rules={[
+                                    {
+                                      required: true,
+                                      message: "Please enter no. of units",
+                                    },
+                                  ]}
+                                >
+                                  <InputNumber />
+                                </Form.Item>
+                                <Form.Item
+                                  wrapperCol={{
+                                    offset: 8,
+                                    span: 16,
+                                  }}
+                                >
+                                  <Button type="primary" htmlType="submit">
+                                    Submit
+                                  </Button>
+                                </Form.Item>
+                              </>
+                            )}
+                          </Form>
+                        ) : (
+                          <Form
+                            ref={formRef}
+                            onFinish={onFinish2}
+                            name="basic"
+                            labelCol={{
+                              span: 8,
+                            }}
+                            wrapperCol={{
+                              span: 16,
+                            }}
+                            // onFinish={imageUpload}
+                            autoComplete="off"
+                          >
+                            <Form.Item
+                              label="Initial Amount"
+                              name="initial_amount"
+                              initialValue={editData.initial_amount}
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Please enter initial amount",
+                                },
+                              ]}
+                            >
+                              <InputNumber
+                                defaultValue={editData.initial_amount}
+                                value={editData.initial_amount}
+                                style={{ width: "100%" }}
+                                formatter={(value) =>
+                                  `N ${value}`.replace(
+                                    /\B(?=(\d{3})+(?!\d))/g,
+                                    ","
+                                  )
+                                }
+                                parser={(value) =>
+                                  // eslint-disable-next-line
+                                  value.replace(/\N\s?|(,*)/g, "")
+                                }
+                              />
+                            </Form.Item>
+                            <Form.Item
+                              wrapperCol={{
+                                offset: 8,
+                                span: 16,
+                              }}
+                            >
+                              <Button type="primary" htmlType="submit">
+                                Update
+                              </Button>
+                            </Form.Item>
+                          </Form>
+                        )}
                       </div>
                     </div>
                   </TabPane>

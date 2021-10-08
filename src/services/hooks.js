@@ -653,9 +653,6 @@ export const useClient = () => {
           message.success(res.data.message);
           cb && cb();
           getClient();
-          setTimeout(() => {
-            window.location.pathname = `/user/client/${res.data.data.client.id}`;
-          }, 1500);
         } else {
           message.error(res.data.message);
         }
