@@ -46,13 +46,14 @@ function Deals() {
       title: "Payable Amount",
       render: (value, row) => {
         let returnValue;
-        // eslint-disable-next-line
-        row.property.property_measurements.map((ppty) => {
-          if (ppty.id === row.property_measurement_id) {
-            returnValue = row.property.price * ppty.square_meter;
-          }
-        });
-        return toCurrency(returnValue);
+        row.property !== null &&
+          // eslint-disable-next-line
+          row.property.property_measurements.map((ppty) => {
+            if (ppty.id === row.property_measurement_id) {
+              returnValue = row.property.price * ppty.square_meter;
+            }
+          });
+        return returnValue && toCurrency(returnValue);
       },
     },
     {

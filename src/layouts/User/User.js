@@ -32,6 +32,7 @@ import { BackgroundColorContext } from "contexts/BackgroundColorContext";
 import { useAuth } from "services/hooks";
 import ConsultantLiners from "views/user/ConsultantLiners";
 import UserProfile from "views/general/UserProfile";
+import DealsHistory from "views/general/DealHistory";
 
 var ps;
 
@@ -131,6 +132,7 @@ function User() {
               />
               <Switch>
                 {getRoutes(userRoutes)}
+                <Route path="/user/deal-history/:id" component={DealsHistory} />
                 <Route path="/user/profile" component={UserProfile} />
                 <Route path="/user/:liner" component={ConsultantLiners} />
                 <Redirect from="*" to="/user/dashboard" />

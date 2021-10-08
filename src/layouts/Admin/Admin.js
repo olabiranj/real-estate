@@ -31,8 +31,8 @@ import logo from "assets/img/react-logo.png";
 import { BackgroundColorContext } from "contexts/BackgroundColorContext";
 import { useAuth } from "services/hooks";
 import Liners from "views/admin/Liners";
-import DealsHistory from "views/admin/DealHistory";
 import UserProfile from "views/general/UserProfile";
+import DealsHistory from "views/general/DealHistory";
 
 var ps;
 

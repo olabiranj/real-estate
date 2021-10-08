@@ -24,9 +24,12 @@ import { frontendUrl } from "services/hooks";
 import { publicRoutes } from "routes";
 import { addKeysToObj } from "services/helpers";
 import { useProperties } from "services/hooks";
+import { useHistory } from "react-router";
+import { toCurrency } from "services/helpers";
 const { TabPane } = Tabs;
 
 function Client() {
+  const history = useHistory();
   const { properties } = useProperties();
   const { addClient, clientLoading, client, assignProperty } = useClient();
   const [p_measure, setP_measure] = useState(null);
@@ -53,6 +56,9 @@ function Client() {
     editData === null
       ? assignProperty(values, id, onReset)
       : assignProperty({ ...editData, ...values }, id, onReset);
+
+    setEditData(null);
+    setId(null);
   };
 
   useEffect(() => {
@@ -80,6 +86,20 @@ function Client() {
       dataIndex: "status",
     },
     {
+      title: "Payable Amount",
+      render: (value, row) => {
+        let returnValue;
+        row.property !== null &&
+          // eslint-disable-next-line
+          row.property.property_measurements.map((ppty) => {
+            if (ppty.id === row.property_measurement_id) {
+              returnValue = row.property.price * ppty.square_meter;
+            }
+          });
+        return returnValue && toCurrency(returnValue);
+      },
+    },
+    {
       title: "Amount Paid",
       dataIndex: "amount_paid",
     },
@@ -93,10 +113,18 @@ function Client() {
       dataIndex: "id",
       render: (value, record) => (
         <div className="d-flex">
+          <Button
+            onClick={() => history.push(`/user/deal-history/${record.id}`)}
+            className="mr-2"
+            type="primary"
+          >
+            View History
+          </Button>
           {record.property_id === null ? (
             <Button
               onClick={() => {
                 setId(record.id);
+                setEditData(null);
                 setTab("3");
               }}
               className="mr-2"
@@ -126,7 +154,6 @@ function Client() {
       ),
     },
   ];
-
   return (
     <>
       <div className="content">
@@ -237,7 +264,17 @@ function Client() {
                     </div>
                   </TabPane>
                   <TabPane
-                    tab={<span onClick={() => setTab("2")}>View Client</span>}
+                    tab={
+                      <span
+                        onClick={() => {
+                          setTab("2");
+                          setEditData(null);
+                          setId(null);
+                        }}
+                      >
+                        View Client
+                      </span>
+                    }
                     key="2"
                   >
                     <Table
@@ -249,11 +286,10 @@ function Client() {
                   </TabPane>
                   <TabPane
                     tab={
-                      <span onClick={() => id !== null && setTab("3")}>
+                      <span onClick={() => setTab("3")}>
                         Assign Properties to existing clients
                       </span>
                     }
-                    disabled={id === null ? true : false}
                     key="3"
                   >
                     <div className="row">
@@ -272,6 +308,32 @@ function Client() {
                             // onFinish={imageUpload}
                             autoComplete="off"
                           >
+                            {id === null && (
+                              <Form.Item
+                                label="Client"
+                                name="user_id"
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: "Please select a client",
+                                  },
+                                ]}
+                              >
+                                <Select
+                                  placeholder="Select a client"
+                                  allowClear
+                                >
+                                  {client?.map((prpty, i) => (
+                                    <Select.Option
+                                      key={i}
+                                      value={prpty.user_id}
+                                    >
+                                      {`${prpty.user.name} ${prpty.user.last_name}`}
+                                    </Select.Option>
+                                  ))}
+                                </Select>
+                              </Form.Item>
+                            )}
                             <Form.Item
                               label="Property"
                               name="property"
@@ -416,7 +478,7 @@ function Client() {
                               ]}
                             >
                               <InputNumber
-                                defaultValue={editData.initial_amount}
+                                initialvalue={editData.initial_amount}
                                 value={editData.initial_amount}
                                 style={{ width: "100%" }}
                                 formatter={(value) =>

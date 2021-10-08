@@ -641,7 +641,7 @@ export const useClient = () => {
         setClientLoading(false);
         cb && cb();
       });
-    setClient(false);
+    setClientLoading(false);
   }
 
   function addClient(params, cb) {
@@ -665,23 +665,43 @@ export const useClient = () => {
   }
   function assignProperty(params, id, cb) {
     setClientLoading(true);
-    axios
-      .put(url(`${backendRoutes.user_client}/${id}/update`), params)
-      .then((res) => {
-        if (res.data.status === "success") {
-          message.success(res.data.message);
+    if (params.user_id) {
+      axios
+        .post(url(`${backendRoutes.user_client}/assign-property`), params)
+        .then((res) => {
+          if (res.data.status === "success") {
+            message.success(res.data.message);
+            cb && cb();
+            getClient();
+          } else {
+            message.error(res.data.message);
+          }
+          setClientLoading(false);
+        })
+        .catch((err) => {
+          message.error(err.response.data.message);
+          setClientLoading(false);
           cb && cb();
-          getClient();
-        } else {
-          message.error(res.data.message);
-        }
-        setClientLoading(false);
-      })
-      .catch((err) => {
-        message.error(err.response.data.message);
-        setClientLoading(false);
-        cb && cb();
-      });
+        });
+    } else {
+      axios
+        .put(url(`${backendRoutes.user_client}/${id}/update`), params)
+        .then((res) => {
+          if (res.data.status === "success") {
+            message.success(res.data.message);
+            cb && cb();
+            getClient();
+          } else {
+            message.error(res.data.message);
+          }
+          setClientLoading(false);
+        })
+        .catch((err) => {
+          message.error(err.response.data.message);
+          setClientLoading(false);
+          cb && cb();
+        });
+    }
   }
 
   useEffect(() => {
