@@ -238,7 +238,9 @@ function Client() {
                   </TabPane>
                   <TabPane
                     tab={
-                      <span onClick={() => setTab("3")}>Assign Properties</span>
+                      <span onClick={() => setTab("3")}>
+                        Assign Properties to clients
+                      </span>
                     }
                     key="3"
                   >
