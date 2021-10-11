@@ -10,6 +10,7 @@ import { publicRoutes } from "routes";
 import { message } from "antd";
 
 export const frontendUrl = "https://demo-re.netlify.app";
+
 export const useAuth = () => {
   const [value, setValue] = useState();
   const content = useSelector((root) => root.auth);
@@ -36,6 +37,34 @@ export const useAuth = () => {
       dispatch({ type: LOGOUT_SUCCESS });
       setTimeout(() => localStorage.removeItem("token"), 1000);
       window.location.pathname = publicRoutes.LOGIN;
+    } else if (
+      content.isAuthenticated &&
+      window.location.pathname.includes("/admin")
+    ) {
+      axios
+        .get(url(backendRoutes.admin_dashboard))
+        .then(() => {})
+        .catch((err) => {
+          if (err.response.data.message === "Unauthenticated") {
+            dispatch({ type: LOGOUT_SUCCESS });
+            setTimeout(() => localStorage.removeItem("token"), 1000);
+            window.location.pathname = publicRoutes.LOGIN;
+          }
+        });
+    } else if (
+      content.isAuthenticated &&
+      window.location.pathname.includes("/user")
+    ) {
+      axios
+        .get(url(backendRoutes.user_dashboard))
+        .then(() => {})
+        .catch((err) => {
+          if (err.response.data.message === "Unauthenticated") {
+            dispatch({ type: LOGOUT_SUCCESS });
+            setTimeout(() => localStorage.removeItem("token"), 1000);
+            window.location.pathname = publicRoutes.LOGIN;
+          }
+        });
     }
     // eslint-disable-next-line
   }, []);
@@ -233,7 +262,6 @@ export const useAuth = () => {
     handleVerifyAccount,
   };
 };
-
 export const usePropertyCategories = () => {
   const [propLoading, setPropLoading] = useState(false);
   const [propertyCategories, setPropCategories] = useState([]);
@@ -580,7 +608,6 @@ export const useLiners = () => {
   const [linersLoading, setLinersLoading] = useState(false);
   const [liners, setLiners] = useState([]);
   let { id, liner } = useParams();
-  console.log(id, liner);
   useEffect(() => {
     setLinersLoading(true);
     if (window.location.pathname.includes("admin")) {
@@ -600,7 +627,6 @@ export const useLiners = () => {
         });
     } else {
       const newLiner = window.location.pathname.split("/")[2];
-      console.log(newLiner);
       axios
         .get(url(`${backendRoutes.user}/${newLiner}`))
         .then((res) => {
@@ -814,5 +840,69 @@ export const useDeals = () => {
     getDeals,
     deals,
     dealsLoading,
+  };
+};
+export const useDashboardData = () => {
+  const dispatch = useDispatch();
+  const [dataLoading, setDataLoading] = useState(false);
+  const [dashboardData, setDashboardData] = useState({});
+  const role = useSelector((state) => state.auth.user.data.roles[0].name);
+  const user = useSelector((state) => state.auth.user);
+  function getData() {
+    setDataLoading(true);
+    axios
+      .get(
+        url(
+          role === "admin"
+            ? backendRoutes.admin_dashboard
+            : backendRoutes.user_dashboard
+        )
+      )
+      .then((res) => {
+        if (res.data.status === "success") {
+          setDashboardData(res.data.data[0]);
+        } else {
+          message.error(res.data.message);
+        }
+        setDataLoading(false);
+      })
+      .catch((err) => {
+        message.error("Unable to get deals");
+        setDataLoading(false);
+      });
+  }
+  function updateProfile(data) {
+    setDataLoading(true);
+    axios
+      .post(url(backendRoutes.get_user), data)
+      .then((res) => {
+        if (res.data.status === "success") {
+          message.success(res.data.message);
+          dispatch({
+            type: LOGIN_SUCCESS,
+            payload: {
+              ...user,
+              data: { ...res.data.data, roles: user.data.roles },
+            },
+          });
+        } else {
+          message.error(res.data.message);
+        }
+        setDataLoading(false);
+      })
+      .catch((err) => {
+        message.error("Unable to update data");
+        setDataLoading(false);
+      });
+  }
+  useEffect(() => {
+    window.location.pathname === backendRoutes.user_dashboard && getData();
+    window.location.pathname === backendRoutes.admin_dashboard && getData();
+    // eslint-disable-next-line
+  }, []);
+  return {
+    dataLoading,
+    dashboardData,
+    updateProfile,
   };
 };

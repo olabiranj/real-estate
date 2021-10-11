@@ -130,6 +130,7 @@ export const backendRoutes = {
   reset_password: "/password/reset",
   get_user: "/user",
   // admin routes
+  admin_dashboard: "/admin/dashboard",
   admin_categories: "/admin/categories",
   admin_properties: "/admin/properties",
   admin_consultants: "/admin/consultants",
@@ -139,6 +140,7 @@ export const backendRoutes = {
   admin_email: "/admin/send-messages/bulkemail",
 
   // consultant routes
+  user_dashboard: "/consultant/dashboard",
   user: "/consultant",
   user_client: "/consultant/clients",
 };

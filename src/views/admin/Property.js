@@ -111,10 +111,6 @@ function Property() {
       dataIndex: "state",
     },
     {
-      title: "Unit(s)",
-      dataIndex: "units",
-    },
-    {
       title: "Status",
       dataIndex: "status",
     },
@@ -749,12 +745,14 @@ function Property() {
                     }
                     key="2"
                   >
+                    {/* <div className="scroll-x"> */}
                     <Table
                       scroll={{ x: 1300 }}
                       dataSource={addKeysToObj(properties)}
                       loading={propLoading}
                       columns={columns}
                     />
+                    {/* </div> */}
                   </TabPane>
                   <TabPane
                     tab={<span onClick={() => setTab("3")}>Upload Image</span>}

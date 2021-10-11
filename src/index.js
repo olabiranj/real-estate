@@ -28,9 +28,10 @@ import { PersistGate } from "redux-persist/es/integration/react";
 import AdminLayout from "layouts/Admin/Admin.js";
 import UserLayout from "layouts/User/User";
 
-import "assets/scss/black-dashboard-react.scss";
+import "assets/css/black-dashboard-react.css";
 import "assets/demo/demo.css";
 import "assets/css/nucleo-icons.css";
+import "assets/css/style.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
 import ThemeContextWrapper from "./components/ThemeWrapper/ThemeWrapper";

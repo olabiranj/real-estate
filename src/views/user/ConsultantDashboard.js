@@ -16,15 +16,10 @@
 
 */
 import React from "react";
-// nodejs library that concatenates classes
-import classNames from "classnames";
-// react plugin used to create charts
-import { Line, Bar } from "react-chartjs-2";
 
 // reactstrap components
 import {
   Button,
-  ButtonGroup,
   Card,
   CardHeader,
   CardBody,
@@ -34,174 +29,168 @@ import {
 } from "reactstrap";
 
 // core components
-import { chartExample1, chartExample3 } from "variables/charts.js";
 import { useSelector } from "react-redux";
-import { useHistory } from "react-router";
-import { message } from "antd";
+import { message, Skeleton } from "antd";
+import { useDashboardData } from "services/hooks";
 
 function ConsultantDashboard(props) {
   const user = useSelector((state) => state.auth.user.data);
-  const history = useHistory();
-  const [bigChartData, setbigChartData] = React.useState("data1");
-  const setBgChartData = (name) => {
-    setbigChartData(name);
-  };
+  const { dataLoading, dashboardData } = useDashboardData();
   return (
     <>
       <div className="content">
-        <Row>
-          <Col lg="4">
-            <Card className="card-chart">
-              <CardHeader>
-                <h5 className="card-category">Daily Sales</h5>
-                <CardTitle tag="h3">
-                  <i className="tim-icons icon-delivery-fast text-primary" />{" "}
-                  3,500€
-                </CardTitle>
-              </CardHeader>
-              <CardBody>
-                <div className="chart-area">
-                  <Bar
-                    data={chartExample3.data}
-                    options={chartExample3.options}
-                  />
-                </div>
-              </CardBody>
-            </Card>
-          </Col>
-          <Col lg="4">
-            <Card className=" p-3">
-              <CardHeader>
-                <h4 className="card-category">Hello,</h4>
-                <CardTitle tag="h2">
-                  {user.name} {user.last_name} 😁
-                </CardTitle>
-              </CardHeader>
-              <CardBody>
-                <div className="d-flex mb-4">
-                  <Button
-                    onClick={() => {
-                      navigator.clipboard.writeText(user.referral_link);
-                      message.info("Link copied to clipboard");
-                    }}
-                  >
-                    Copy Referral Link
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      navigator.clipboard.writeText(user.referral_code);
-                      message.info("Code copied to clipboard");
-                    }}
-                  >
-                    Copy Referral Code
-                  </Button>
-                </div>
-                <Button block onClick={() => history.push("/user/client")}>
-                  Create Client
-                </Button>
-              </CardBody>
-            </Card>
-          </Col>
-          <Col lg="4">
-            <Card className="card-chart">
-              <CardHeader>
-                <h5 className="card-category">Daily Sales</h5>
-                <CardTitle tag="h3">
-                  <i className="tim-icons icon-delivery-fast text-primary" />{" "}
-                  3,500€
-                </CardTitle>
-              </CardHeader>
-              <CardBody>
-                <div className="chart-area">
-                  <Bar
-                    data={chartExample3.data}
-                    options={chartExample3.options}
-                  />
-                </div>
-              </CardBody>
-            </Card>
-          </Col>
-        </Row>
-        <Row>
-          <Col xs="12">
-            <Card className="card-chart">
-              <CardHeader>
-                <Row>
-                  <Col className="text-left" sm="6">
-                    <h5 className="card-category">Total Shipments</h5>
-                    <CardTitle tag="h2">Performance</CardTitle>
-                  </Col>
-                  <Col sm="6">
-                    <ButtonGroup
-                      className="btn-group-toggle float-right"
-                      data-toggle="buttons"
-                    >
+        {dataLoading ? (
+          <Skeleton avatar paragraph={{ rows: 4 }} />
+        ) : (
+          <>
+            <Row>
+              <Col lg="12">
+                <Card className=" p-3">
+                  <CardHeader>
+                    <h4 className="card-category">Hello,</h4>
+                    <CardTitle tag="h2">
+                      {user.name} {user.last_name} 😁
+                    </CardTitle>
+                  </CardHeader>
+                  <CardBody>
+                    <div className="d-flex mb-4">
                       <Button
-                        tag="label"
-                        className={classNames("btn-simple", {
-                          active: bigChartData === "data1",
-                        })}
-                        color="info"
-                        id="0"
-                        size="sm"
-                        onClick={() => setBgChartData("data1")}
+                        onClick={() => {
+                          navigator.clipboard.writeText(user.referral_link);
+                          message.info("Link copied to clipboard");
+                        }}
                       >
-                        <span className="d-none d-sm-block d-md-block d-lg-block d-xl-block">
-                          Accounts
-                        </span>
-                        <span className="d-block d-sm-none">
-                          <i className="tim-icons icon-single-02" />
-                        </span>
+                        Copy Referral Link
                       </Button>
                       <Button
-                        color="info"
-                        id="1"
-                        size="sm"
-                        tag="label"
-                        className={classNames("btn-simple", {
-                          active: bigChartData === "data2",
-                        })}
-                        onClick={() => setBgChartData("data2")}
+                        onClick={() => {
+                          navigator.clipboard.writeText(user.referral_code);
+                          message.info("Code copied to clipboard");
+                        }}
                       >
-                        <span className="d-none d-sm-block d-md-block d-lg-block d-xl-block">
-                          Purchases
-                        </span>
-                        <span className="d-block d-sm-none">
-                          <i className="tim-icons icon-gift-2" />
-                        </span>
+                        Copy Referral Code
                       </Button>
-                      <Button
-                        color="info"
-                        id="2"
-                        size="sm"
-                        tag="label"
-                        className={classNames("btn-simple", {
-                          active: bigChartData === "data3",
-                        })}
-                        onClick={() => setBgChartData("data3")}
-                      >
-                        <span className="d-none d-sm-block d-md-block d-lg-block d-xl-block">
-                          Sessions
-                        </span>
-                        <span className="d-block d-sm-none">
-                          <i className="tim-icons icon-tap-02" />
-                        </span>
-                      </Button>
-                    </ButtonGroup>
-                  </Col>
-                </Row>
-              </CardHeader>
-              <CardBody>
-                <div className="chart-area">
-                  <Line
-                    data={chartExample1[bigChartData]}
-                    options={chartExample1.options}
-                  />
-                </div>
-              </CardBody>
-            </Card>
-          </Col>
-        </Row>
+                    </div>
+                  </CardBody>
+                </Card>
+              </Col>
+              <Col lg="4">
+                <Card className="card-chart">
+                  <CardHeader>
+                    <h3 className="card-category">Total Consultants</h3>
+                    <CardTitle tag="h1">
+                      <i className="tim-icons icon-bell-55 text-info" />
+                      {dashboardData.totalConsultants || 0}
+                    </CardTitle>
+                  </CardHeader>
+                </Card>
+              </Col>
+              <Col lg="4">
+                <Card className="card-chart">
+                  <CardHeader>
+                    <h3 className="card-category">Total Clients</h3>
+                    <CardTitle tag="h1">
+                      <i className="tim-icons icon-delivery-fast text-primary" />
+                      {dashboardData.totalClients || 0}
+                    </CardTitle>
+                  </CardHeader>
+                </Card>
+              </Col>
+              <Col lg="4">
+                <Card className="card-chart">
+                  <CardHeader>
+                    <h3 className="card-category">Total Deals</h3>
+                    <CardTitle tag="h1">
+                      <i className="tim-icons icon-send text-success" />
+                      {dashboardData.totalDeals || 0}
+                    </CardTitle>
+                  </CardHeader>
+                </Card>
+              </Col>
+            </Row>
+            <Row>
+              <Col lg="6">
+                <Card className="card-chart">
+                  <CardHeader>
+                    <h3 className="card-category">Total Deals Amount</h3>
+                    <CardTitle tag="h1">
+                      <i className="tim-icons icon-bell-55 text-info" />
+                      {dashboardData.totalDealsAmount || 0}
+                    </CardTitle>
+                  </CardHeader>
+                </Card>
+              </Col>
+              <Col lg="6">
+                <Card className="card-chart">
+                  <CardHeader>
+                    <h3 className="card-category">Total Open Deals</h3>
+                    <CardTitle tag="h1">
+                      <i className="tim-icons icon-delivery-fast text-primary" />
+                      {dashboardData.totalOpenDeals || 0}
+                    </CardTitle>
+                  </CardHeader>
+                </Card>
+              </Col>
+              <Col lg="6">
+                <Card className="card-chart">
+                  <CardHeader>
+                    <h3 className="card-category">Total Closed Deals</h3>
+                    <CardTitle tag="h1">
+                      <i className="tim-icons icon-send text-success" />
+                      {dashboardData.totalClosedDeals || 0}
+                    </CardTitle>
+                  </CardHeader>
+                </Card>
+              </Col>
+              <Col lg="6">
+                <Card className="card-chart">
+                  <CardHeader>
+                    <h3 className="card-category">Today's Consultants</h3>
+                    <CardTitle tag="h1">
+                      <i className="tim-icons icon-send text-success" />
+                      {dashboardData.todayConsultants || 0}
+                    </CardTitle>
+                  </CardHeader>
+                </Card>
+              </Col>
+            </Row>
+            <Row>
+              <Col lg="4">
+                <Card className="card-chart">
+                  <CardHeader>
+                    <h3 className="card-category">Today's Clients</h3>
+                    <CardTitle tag="h1">
+                      <i className="tim-icons icon-bell-55 text-info" />
+                      {dashboardData.todayClients || 0}
+                    </CardTitle>
+                  </CardHeader>
+                </Card>
+              </Col>
+              <Col lg="4">
+                <Card className="card-chart">
+                  <CardHeader>
+                    <h3 className="card-category">Total Commissions Paid</h3>
+                    <CardTitle tag="h1">
+                      <i className="tim-icons icon-delivery-fast text-primary" />
+                      {dashboardData.totalCommissionsPaid || 0}
+                    </CardTitle>
+                  </CardHeader>
+                </Card>
+              </Col>
+              <Col lg="4">
+                <Card className="card-chart">
+                  <CardHeader>
+                    <h3 className="card-category">Total Referrals</h3>
+                    <CardTitle tag="h1">
+                      <i className="tim-icons icon-send text-success" />
+                      {dashboardData.totalReferrals || 0}
+                    </CardTitle>
+                  </CardHeader>
+                </Card>
+              </Col>
+            </Row>
+          </>
+        )}
       </div>
     </>
   );

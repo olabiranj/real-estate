@@ -122,7 +122,7 @@ function Commission() {
                 <Tabs defaultActiveKey="1" activeKey={tab}>
                   <TabPane
                     tab={
-                      <span onClick={() => setTab("1")}>Create Category</span>
+                      <span onClick={() => setTab("1")}>Create Commission</span>
                     }
                     key="1"
                   >
@@ -340,11 +340,13 @@ function Commission() {
                     }
                     key="2"
                   >
-                    <Table
-                      dataSource={addKeysToObj(commissions)}
-                      loading={propLoading}
-                      columns={columns}
-                    />
+                    <div className="scroll-x">
+                      <Table
+                        dataSource={addKeysToObj(commissions)}
+                        loading={propLoading}
+                        columns={columns}
+                      />
+                    </div>
                   </TabPane>
                 </Tabs>
               </CardBody>

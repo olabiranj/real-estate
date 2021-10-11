@@ -40,6 +40,7 @@ function Client() {
   const onReset = () => {
     formRef.current.resetFields();
     setId(null);
+    setEditData(null);
     setTab("2");
   };
   const onFinish = (values) => {
@@ -56,9 +57,6 @@ function Client() {
     editData === null
       ? assignProperty(values, id, onReset)
       : assignProperty({ ...editData, ...values }, id, onReset);
-
-    setEditData(null);
-    setId(null);
   };
 
   useEffect(() => {
@@ -445,7 +443,12 @@ function Client() {
                                     span: 16,
                                   }}
                                 >
-                                  <Button type="primary" htmlType="submit">
+                                  <Button
+                                    loading={clientLoading}
+                                    disabled={clientLoading}
+                                    type="primary"
+                                    htmlType="submit"
+                                  >
                                     Submit
                                   </Button>
                                 </Form.Item>
@@ -499,7 +502,12 @@ function Client() {
                                 span: 16,
                               }}
                             >
-                              <Button type="primary" htmlType="submit">
+                              <Button
+                                loading={clientLoading}
+                                disabled={clientLoading}
+                                type="primary"
+                                htmlType="submit"
+                              >
                                 Update
                               </Button>
                             </Form.Item>

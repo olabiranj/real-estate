@@ -203,11 +203,13 @@ function PropertyCategory() {
                     }
                     key="2"
                   >
-                    <Table
-                      dataSource={addKeysToObj(propertyCategories)}
-                      loading={propLoading}
-                      columns={columns}
-                    />
+                    <div className="scroll-x">
+                      <Table
+                        dataSource={addKeysToObj(propertyCategories)}
+                        loading={propLoading}
+                        columns={columns}
+                      />
+                    </div>
                   </TabPane>
                 </Tabs>
               </CardBody>

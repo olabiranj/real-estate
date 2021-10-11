@@ -114,11 +114,13 @@ function Deals() {
                     }
                     key="1"
                   >
-                    <Table
-                      dataSource={addKeysToObj(deals.all)}
-                      loading={dealsLoading}
-                      columns={columns}
-                    />
+                    <div className="scroll-x">
+                      <Table
+                        dataSource={addKeysToObj(deals.all)}
+                        loading={dealsLoading}
+                        columns={columns}
+                      />
+                    </div>
                   </TabPane>
                   <TabPane
                     tab={
@@ -133,11 +135,13 @@ function Deals() {
                     }
                     key="2"
                   >
-                    <Table
-                      dataSource={addKeysToObj(deals.ongoing)}
-                      loading={dealsLoading}
-                      columns={columns}
-                    />
+                    <div className="scroll-x">
+                      <Table
+                        dataSource={addKeysToObj(deals.ongoing)}
+                        loading={dealsLoading}
+                        columns={columns}
+                      />
+                    </div>
                   </TabPane>
                   <TabPane
                     tab={
@@ -152,11 +156,13 @@ function Deals() {
                     }
                     key="3"
                   >
-                    <Table
-                      dataSource={addKeysToObj(deals.closed)}
-                      loading={dealsLoading}
-                      columns={columns}
-                    />
+                    <div className="scroll-x">
+                      <Table
+                        dataSource={addKeysToObj(deals.closed)}
+                        loading={dealsLoading}
+                        columns={columns}
+                      />
+                    </div>
                   </TabPane>
                 </Tabs>
               </CardBody>
