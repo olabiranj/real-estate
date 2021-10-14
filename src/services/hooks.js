@@ -122,10 +122,9 @@ export const useAuth = () => {
           : history.push("/user");
       })
       .catch((err) => {
-        console.log(err);
-        err.response?.data?.message
-          ? toast(err.response.data.message, { type: "error" })
-          : toast("Unable to Login at the moment", { type: "error" });
+        err.response?.data?.message &&
+          toast(err.response.data.message, { type: "error" });
+        // : toast("Unable to Login at the moment", { type: "error" });
         setAuthLoading(false);
       });
   }
